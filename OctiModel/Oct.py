@@ -3,11 +3,13 @@ from .Enums import *
 class Oct:
 
     """Constructor"""
-    def __init__(self, player):
+    def __init__(self, player, name, row, col):
         if not isinstance(player, Players):
             raise TypeError('players must be an instance of Players Enum, Red or Green')
+        self.__name = name
         self.__player = player  # the oct belong to player
         self.__isAlive = True   # the oct is alive
+        self.__place = (row, col)   # the starting point
         self.__arrowUp = False  # all the arrows and if they are attached to the oct
         self.__arrowUpRight = False
         self.__arrowRight = False
@@ -17,7 +19,8 @@ class Oct:
         self.__arrowLeft = False
         self.__arrowUpLeft = False
 
-    """ Insert an arrow to an oct, get a parameter of arrowType enum"""
+    """ Insert an arrow to an oct, get a parameter of arrowType enum.
+        return the true if you succeed to put the arrow inside, else return false """
     def insertArrow(self, arrow):
         if not isinstance(arrow, Directions):
             raise TypeError('arrows must be an instance of Directions Enum')
@@ -57,7 +60,6 @@ class Oct:
         # fail to insert the arrow
         else:
             return False
-
 
     """ Check if the arrow is inside the oct """
     def isArrow(self, arrow):
@@ -116,3 +118,11 @@ class Oct:
     """ The oct died """
     def death(self):
         self.__isAlive = False
+
+    """ return the coordinates of the oct """
+    def getPlace(self):
+        return self.__place
+
+    """ :return the oct name """
+    def getName(self):
+        return self.__name
