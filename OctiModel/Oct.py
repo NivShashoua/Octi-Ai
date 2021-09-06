@@ -123,6 +123,15 @@ class Oct:
     def getPlace(self):
         return self.__place
 
-    """ :return the oct name """
+    """ return the oct name """
     def getName(self):
         return self.__name
+
+    """ return the player who own the oct """
+    def getPlayer(self):
+        return self.__player
+
+    """ change the oct location """
+    def setPlace(self, newPlace):
+        self.__place = newPlace
+
