@@ -75,10 +75,27 @@ class BoardGame:
     def whereIs(self, oct):
         return self.__octObject().getPlace()
 
+    """"""
+    def __getCoordinate(self, location, direction):
+        outOfBound = (-1, -1)
+        if direction == Directions.Up:
+            if location[0] == 0:
+                return outOfBound
+            location[0] = location[0] - 1
+            return location
+        elif direction == Directions.UpRight:
+            if location[0] == 0 or location[1] == self.__BOARD_WIDTH:
+                return outOfBound
+            location[0] = location[0] - 1
+            location[1] = location[1] + 1
+            return location
+        # TODO: continue
+
     """ What is the possible movement for an oct """
     def whereToGo(self, oct):
         # TODO: complete the function
         octObj = self.__octObject(oct)
+        location = octObj.getPlace()
         arrows = []     # list of all the arrows in the wanted oct
 
         # check if the oct is alive an if its the player turn
