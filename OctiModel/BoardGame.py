@@ -14,41 +14,23 @@ class BoardGame:
         self.__turn = Players.Green
 
         # all the oct on the game
-        self.__green1 = Oct(Players.Green)
-        self.__green2 = Oct(Players.Green)
-        self.__green3 = Oct(Players.Green)
-        self.__green4 = Oct(Players.Green)
-        self.__red1 = Oct(Players.Red)
-        self.__red2 = Oct(Players.Red)
-        self.__red3 = Oct(Players.Red)
-        self.__red4 = Oct(Players.Red)
-
-        # the initial state of the board
-        self.__currentState = {
-            (1, 7): 'empty', (2, 7): 'empty', (3, 7): 'empty', (4, 7): 'empty', (5, 7): 'empty', (6, 7): 'empty',
-            (1, 6): 'empty', (2, 6): 'G1', (3, 6): 'G2', (4, 6): 'G3', (5, 6): 'G4', (6, 6): 'empty',
-            (1, 5): 'empty', (2, 5): 'empty', (3, 5): 'empty', (4, 5): 'empty', (5, 5): 'empty', (6, 5): 'empty',
-            (1, 4): 'empty', (2, 4): 'empty', (3, 4): 'empty', (4, 4): 'empty', (5, 4): 'empty', (6, 4): 'empty',
-            (1, 3): 'empty', (2, 3): 'empty', (3, 3): 'empty', (4, 3): 'empty', (5, 3): 'empty', (6, 3): 'empty',
-            (1, 2): 'empty', (2, 2): 'R1', (3, 2): 'R2', (4, 2): 'R3', (5, 2): 'R4', (6, 2): 'empty',
-            (1, 1): 'empty', (2, 1): 'empty', (3, 1): 'empty', (4, 1): 'empty', (5, 1): 'empty', (6, 1): 'empty'
-        }
-
-        # the places of all the oct on the board
-        self.__octPlaces = {
-            'G1': (1, 1),
-            'G2': (2, 1),
-            'G3': (3, 1),
-            'G4': (4, 1),
-            'R1': (1, 5),
-            'R2': (2, 5),
-            'R3': (3, 5),
-            'R4': (4, 5)
-        }
+        self.__green1 = Oct(Players.Green, "G1", 1, 1)
+        self.__green2 = Oct(Players.Green, "G2", 1, 2)
+        self.__green3 = Oct(Players.Green, "G3", 1, 3)
+        self.__green4 = Oct(Players.Green, "G4", 1, 4)
+        self.__red1 = Oct(Players.Red, "R1", 5, 1)
+        self.__red2 = Oct(Players.Red, "R2", 5, 2)
+        self.__red3 = Oct(Players.Red, "R3", 5, 3)
+        self.__red4 = Oct(Players.Red, "R4", 5, 4)
 
         # number of arrows each players have. initial 12 for each
         self.__greenArrows = 12
         self.__redArrows = 12
+
+    """ return a list of all the octs """
+    def listOfAllOct(self):
+        return [self.__green1, self.__green2, self.__green3, self.__green4,
+                self.__red1, self.__red2, self.__red3, self.__red4]
 
     """ Change the turn of the player """
     def __changeTurn(self):
@@ -91,15 +73,37 @@ class BoardGame:
             else:
                 return  # if the oct symbol was illegal, do nothing
 
+        # decrease one arrow to the player who used it
+        if self.__turn == Players.Green:
+            self.__greenArrows = self.__greenArrows - 1
+        else:
+            self.__redArrows = self.__redArrows - 1
+
         self.__changeTurn() # change the turn
 
     """ return the coordinates of the oct """
     def whereIs(self, oct):
-        return self.__octPlaces[oct]
+        if oct == 'G1':
+            self.__green1.getPlace()
+        elif oct == 'G2':
+            self.__green2.getPlace()
+        elif oct == 'G3':
+            self.__green3.getPlace()
+        elif oct == 'G4':
+            self.__green4.getPlace()
+        elif oct == 'R1':
+            self.__red1.getPlace()
+        elif oct == 'R2':
+            self.__red2.getPlace()
+        elif oct == 'R3':
+            self.__red3.getPlace()
+        elif oct == 'R4':
+            self.__red4.getPlace()
 
     """ What is the possible movement for an oct """
     def whereToGo(self, oct):
         # TODO: complete the function
+        arrows = []     # list of all the arrows in the wanted oct
         if self.__turn == Players.Green:
             if oct == 'G1':
                 octObj = self.__green1
@@ -134,8 +138,6 @@ class BoardGame:
 
         print("\narrows- ", arrows)
 
-
-
     """ move an oct """
     def move(self, player, oct, direction):
         # TODO: complete the function
@@ -150,13 +152,14 @@ class BoardGame:
 
     """ print the current state of the board """
     def printBoard(self):
-        i = 1
-        for loc in self.__currentState:
-            if i > self.__BOARD_WIDTH:
-                print('')
-                i = 1
-            if self.__currentState.get(loc) == 'empty':
-                print('--', end=' ')
-            else:
-                print(self.__currentState.get(loc), end=' ')
-            i = i + 1
+        print('', end=' ')
+        allOctList = self.listOfAllOct()
+        for row in range(self.__BOARD_LENGTH):
+            for col in range(self.__BOARD_WIDTH):
+                inLocation = '--'   # what is inside this location
+                for oct in allOctList:
+                    if (row, col) == oct.getPlace():
+                        inLocation = oct.getName()
+                        break
+                print(inLocation, end=' ')
+            print("\n", end=' ')
