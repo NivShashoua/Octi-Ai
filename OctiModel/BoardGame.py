@@ -7,6 +7,7 @@ class BoardGame:
     """Constant"""
     __BOARD_LENGTH = 7
     __BOARD_WIDTH = 6
+    __LocationError = (-1, -1)
 
     """Constructor"""
     def __init__(self):
@@ -75,28 +76,86 @@ class BoardGame:
     def whereIs(self, oct):
         return self.__octObject().getPlace()
 
-    """"""
+    """ get the coordinates near the wanted location, according to the direction. 
+        if the new location is out of bound then return (-1, -1) """
     def __getCoordinate(self, location, direction):
-        outOfBound = (-1, -1)
-        if direction == Directions.Up:
-            if location[0] == 0:
-                return outOfBound
-            location[0] = location[0] - 1
-            return location
-        elif direction == Directions.UpRight:
-            if location[0] == 0 or location[1] == self.__BOARD_WIDTH:
-                return outOfBound
-            location[0] = location[0] - 1
-            location[1] = location[1] + 1
-            return location
-        # TODO: continue
+        row = location[0]
+        col = location[1]
 
-    """ What is the possible movement for an oct """
+        if direction == Directions.Up:
+            if row == 0:
+                return self.__LocationError
+            row = row - 1
+
+        elif direction == Directions.UpRight:
+            if row == 0 or col == self.__BOARD_WIDTH:
+                return self.__LocationError
+            row = row - 1
+            col = col + 1
+
+        elif direction == Directions.Right:
+            if col == self.__BOARD_WIDTH:
+                return self.__LocationError
+            col = col + 1
+
+        elif direction == Directions.DownRight:
+            if row == self.__BOARD_LENGTH or col == self.__BOARD_WIDTH:
+                return self.__LocationError
+            row = row + 1
+            col = col + 1
+
+        elif direction == Directions.Down:
+            if row == self.__BOARD_LENGTH:
+                return self.__LocationError
+            row = row + 1
+
+        elif direction == Directions.DownLeft:
+            if row == self.__BOARD_LENGTH or col == 0:
+                return self.__LocationError
+            row = row + 1
+            col = col - 1
+
+        elif direction == Directions.Left:
+            if col == 0:
+                return self.__LocationError
+            col = col - 1
+
+        elif direction == Directions.UpLeft:
+            if row == 0 or col == 0:
+                return self.__LocationError
+            row = row - 1
+            col = col - 1
+
+        newLocation = (row, col)
+        return newLocation
+
+    """ check the location is not occupied by other alive oct. 
+        if the place is occupied return true, if not false. """
+    def __isOccupied(self, location):
+        for oct in self.__listOfAllOctAlive():
+            if oct.getPlace() == location:
+                return True
+        return False
+
+    """ return a list of all the locations the oct can move after the jump( can be multiple jump) """
+    def __handelJump(self, location, arrows, possibleJumps):
+        # the stop condition is check if there wasn't a change in the list possibleJumps
+        if location != self.__LocationError and not self.__isOccupied(location) and location not in possibleJumps:
+            possibleJumps.append(location)
+            for direction in arrows:
+                newLocation = self.__getCoordinate(location, direction)
+                # you can do multiple jumps only if there are other octs next to it
+                if newLocation != self.__LocationError and self.__isOccupied(newLocation):
+                    newJumpLocation = self.__getCoordinate(newLocation, direction)
+                    self.__handelJump(newJumpLocation, arrows, possibleJumps)
+
+        return possibleJumps
+
+    """ What are all the possible movement for an oct """
     def whereToGo(self, oct):
-        # TODO: complete the function
+        possibleMoves = []
         octObj = self.__octObject(oct)
         location = octObj.getPlace()
-        arrows = []     # list of all the arrows in the wanted oct
 
         # check if the oct is alive an if its the player turn
         if octObj in self.__listOfAllOctAlive() and octObj.getPlayer() == self.__turn:
@@ -104,8 +163,19 @@ class BoardGame:
         else:
             return  # if the oct symbol was illegal or it's not the right player, do nothing
 
+        for direction in arrows:
+            newLocation = self.__getCoordinate(location, direction)
+            if newLocation != self.__LocationError:
+                # if the near location is not occupied, add it to the list: possibleMoves
+                if not self.__isOccupied(newLocation):
+                    possibleMoves.append(newLocation)
 
-        print("\narrows- ", arrows)
+                # if there might be a jump
+                else:
+                    jumpLocation = self.__getCoordinate(newLocation, direction)
+                    possibleMoves = possibleMoves + self.__handelJump(jumpLocation, arrows, [])
+
+        return possibleMoves
 
     """ move an oct to a specfic cordinates"""
     def move(self, oct, row, col):
@@ -113,6 +183,7 @@ class BoardGame:
         if location in self.whereToGo(oct):
             octObj = self.__octObject(oct)
             octObj.setPlace(location)
+            self.__changeTurn() # change the turn
 
     """ print the current state of the board """
     def printBoard(self):
@@ -127,3 +198,5 @@ class BoardGame:
                         break
                 print(inLocation, end=' ')
             print("\n", end=' ')
+
+        print('\n')
