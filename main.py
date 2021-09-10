@@ -1,4 +1,5 @@
 import OctiModel.BoardGame
+import OctiView.BoardGameView
 from OctiModel.Enums import *
 
 if __name__ == '__main__':
@@ -18,6 +19,10 @@ if __name__ == '__main__':
     board.move('R3', 4, 3)
     board.printBoard()
     print(board.whereToGo('G1'))
+    view = OctiView.BoardGameView.BoardGameView(board)
+
+
+
 
 
 
