@@ -55,10 +55,20 @@ class BoardGame:
         else:
             self.__turn = Players.Green
 
+    """ return True if the player still have some arrows left, else return False """
+    def __playerArrowsNotEmpty(self):
+        if self.__turn == Players.Green:
+            if self.__greenArrows > 0:
+                return True
+        else:
+            if self.__redArrows > 0:
+                return True
+        return False
+
     """ Insert an arrow in your turn """
     def insertArrow(self, oct, arrow):
         octObj = self.__octObject(oct)
-        if octObj in self.__listOfAllOctAlive() and octObj.getPlayer() == self.__turn:
+        if octObj in self.__listOfAllOctAlive() and octObj.getPlayer() == self.__turn and self.__playerArrowsNotEmpty():
             if not octObj.insertArrow(arrow):
                 return  # if there is already an arrow inside
         else:
@@ -157,8 +167,8 @@ class BoardGame:
         octObj = self.__octObject(oct)
         location = octObj.getPlace()
 
-        # check if the oct is alive an if its the player turn
-        if octObj in self.__listOfAllOctAlive() and octObj.getPlayer() == self.__turn:
+        # check if the oct is alive
+        if octObj in self.__listOfAllOctAlive():
             arrows = octObj.showAllArrows()
         else:
             return  # if the oct symbol was illegal or it's not the right player, do nothing
@@ -177,13 +187,16 @@ class BoardGame:
 
         return possibleMoves
 
-    """ move an oct to a specfic cordinates"""
+    """ move an oct to a specific coordinates"""
     def move(self, oct, row, col):
         location = (row, col)
+        # check if its a legal move for this oct.
         if location in self.whereToGo(oct):
             octObj = self.__octObject(oct)
-            octObj.setPlace(location)
-            self.__changeTurn() # change the turn
+            # check that the player that trying to move the oct is its owner.
+            if octObj.getPlayer() == self.__turn:
+                octObj.setPlace(location)
+                self.__changeTurn() # change the turn
 
     """ print the current state of the board """
     def printBoard(self):
@@ -198,5 +211,5 @@ class BoardGame:
                         break
                 print(inLocation, end=' ')
             print("\n", end=' ')
-
+        print("turn:", self.__turn)
         print('\n')
