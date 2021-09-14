@@ -7,7 +7,7 @@ from PyQt5 import QtWidgets, QtCore
 import OctiModel.BoardGame
 from OctiModel.Enums import *
 
-class BoardGameView(QMainWindow):
+class BoardGameView(QMainWindpipow):
 
     count = 0
 
