@@ -1,7 +1,8 @@
 import sys
-from PyQt5.QtWidgets import *
+import pathlib
 from PyQt5.QtGui import *
-from .CellView import *
+from PyQt5.QtWidgets import *
+from PyQt5.QtCore import *
 import OctiModel.BoardGame
 from OctiModel.Enums import *
 
@@ -23,6 +24,7 @@ class BoardGameView(QMainWindow):
     def __init__(self, model):
         app = QApplication(sys.argv)
         super().__init__()
+        self.__board = model
         self.setWindowTitle("Octi")
         self.setGeometry(300, 100, self.__WINDOW_WIDTH, self.__WINDOW_LENGTH)
 
@@ -35,7 +37,7 @@ class BoardGameView(QMainWindow):
         qp.begin(self)
         qp.setPen(QColor(Qt.black))
         self.__paintBoard(qp)
-
+        self.__paintOcts(qp)
 
         qp.end()
 
@@ -62,6 +64,23 @@ class BoardGameView(QMainWindow):
 
     def __paintOcts(self, qp):
         """TODO: complete the function"""
+        path = str(pathlib.Path().absolute())    # get the full path of the current project location
+
+        for octInfo in self.__board.getAllAliveOctInfo():
+            octName = octInfo[0]
+            octColor = octInfo[1]
+            oct_X = octInfo[2][0]   # the oct X coordinate
+            oct_Y = octInfo[2][1]   # the oct Y coordinate
+
+            # get the right pic for the oct according to the color
+            if octColor == Players.Green:
+                pic = QPixmap(path + "\OctiView\Green_Octagon.png")
+                print(path + "\OctiView\Green_Octagon.png")
+            else:
+                pic = QPixmap(path + "\OctiView\Red_Octagon.png")
+                print(path + "\OctiView\Red_Octagon.png")
+            qp.drawPixmap(oct_Y * self.__SQUARE_SIZE + self.__X_START, oct_X * self.__SQUARE_SIZE + self.__Y_START,
+                          self.__SQUARE_SIZE, self.__SQUARE_SIZE, pic)
 
     def __showMassage(self, str):
         """TODO: complete the function"""
