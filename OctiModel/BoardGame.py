@@ -82,9 +82,18 @@ class BoardGame:
 
         self.__changeTurn() # change the turn
 
-    """ return the coordinates of the oct """
-    def whereIs(self, oct):
-        return self.__octObject().getPlace()
+    """ given an oct name the function return a list of all the arrows it have """
+    def showAllArrows(self, oct):
+        octObj = self.__octObject(oct)
+        return octObj.showAllArrows()
+
+    """ for all the octs that are alive return this tuple: (name, color, coordinates) """
+    def getAllAliveOctInfo(self):
+        listOfAllOctPlaces = []
+        for oct in self.__listOfAllOctAlive():
+            listOfAllOctPlaces.append((oct.getName(), oct.getPlayer(), oct.getPlace()))
+
+        return listOfAllOctPlaces
 
     """ get the coordinates near the wanted location, according to the direction. 
         if the new location is out of bound then return (-1, -1) """
@@ -213,3 +222,4 @@ class BoardGame:
             print("\n", end=' ')
         print("turn:", self.__turn)
         print('\n')
+
