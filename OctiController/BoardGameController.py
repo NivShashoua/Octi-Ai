@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from OctiModel.Enums import *
 import OctiModel.BoardGame
-from OctiView.BoardGameView import BoardGameView
+import OctiView.BoardGameView
 
 class BoardGameController():
 
@@ -13,9 +13,10 @@ class BoardGameController():
         #app = QApplication(sys.argv)
         self.__board = model
         self.__view = view
-        self.__insertButton = self.__view.insertButton()
-        self.__insertButton.clicked.connect(self.insertArrow)
+        self.__view.connectFunctionToInsertButton(self.insertArrow)
         #sys.exit(app.exec_())
 
+
+    """" pop the windows to insert an arrow, when cilcked the insert an arrow button """
     def insertArrow(self):
-        print("LOL")
+        self.__view.showMassage("NANIII")
