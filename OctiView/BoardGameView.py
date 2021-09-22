@@ -7,7 +7,7 @@ from PyQt5.QtCore import *
 from OctiModel.Enums import *
 
 
-class BoardGameView(QWidget):
+class BoardGameView(QMainWindow):
 
     """ Constants """
     __WINDOW_LENGTH = 900
@@ -17,19 +17,18 @@ class BoardGameView(QWidget):
     __NUMBER_OF_ROW = 7
     __NUMBER_OF_COL = 6
 
+    # the coordinates where the board should be paint in
     __X_START = (__WINDOW_WIDTH - __SQUARE_SIZE * __NUMBER_OF_COL) // 2 - 100
     __Y_START = (__WINDOW_LENGTH - __SQUARE_SIZE * __NUMBER_OF_ROW) // 2
 
+    # all the parameters needed for the Insert Arrow button
     __INSERT_ARROW_BUTTON_LENGTH = 70
     __INSERT_ARROW_BUTTON_WIDTH = 100
     __INSERT_ARROW_BUTTON_X = __X_START + __SQUARE_SIZE * (__NUMBER_OF_COL + 0.5)
     __INSERT_ARROW_BUTTON_Y = __Y_START + __SQUARE_SIZE * (__NUMBER_OF_ROW - 1)
 
-    __ARROW_LENGTH = 30
-    __ARROW_WIDTH = 8
-
     # get the full path of the current project location
-    __PATH = str(pathlib.Path().absolute())
+    __PATH = str(pathlib.Path().absolute()) + "\OctiView\Pictures\\"
 
     """ Constructor """
     def __init__(self, model):
@@ -92,10 +91,10 @@ class BoardGameView(QWidget):
 
             # get the right pic for the oct according to the color
             if octColor == Players.Green:
-                pic = QPixmap(self.__PATH + "\OctiView\Green_Octagon.png")
+                pic = QPixmap(self.__PATH + "Green_Octagon.png")
 
             else:
-                pic = QPixmap(self.__PATH + "\OctiView\Red_Octagon.png")
+                pic = QPixmap(self.__PATH + "Red_Octagon.png")
             # draw the oct
             qp.drawPixmap(oct_X, oct_Y, self.__SQUARE_SIZE, self.__SQUARE_SIZE, pic)
             # draw all its arrows
@@ -110,28 +109,28 @@ class BoardGameView(QWidget):
             arrowPic = QPixmap()
 
             if arrow == Directions.Up:
-                arrowPic = QPixmap(self.__PATH + "\OctiView\\Up.png")
+                arrowPic = QPixmap(self.__PATH + "Up.png")
 
             elif arrow == Directions.UpRight:
-                arrowPic = QPixmap(self.__PATH + "\OctiView\\UpRight.png")
+                arrowPic = QPixmap(self.__PATH + "UpRight.png")
 
             elif arrow == Directions.Right:
-                arrowPic = QPixmap(self.__PATH + "\OctiView\Right.png")
+                arrowPic = QPixmap(self.__PATH + "Right.png")
 
             elif arrow == Directions.DownRight:
-                arrowPic = QPixmap(self.__PATH + "\OctiView\DownRight.png")
+                arrowPic = QPixmap(self.__PATH + "DownRight.png")
 
             elif arrow == Directions.Down:
-                arrowPic = QPixmap(self.__PATH + "\OctiView\Down.png")
+                arrowPic = QPixmap(self.__PATH + "Down.png")
 
             elif arrow == Directions.DownLeft:
-                arrowPic = QPixmap(self.__PATH + "\OctiView\DDownLeft.png")
+                arrowPic = QPixmap(self.__PATH + "DownLeft.png")
 
             elif arrow == Directions.Left:
-                arrowPic = QPixmap(self.__PATH + "\OctiView\DownRight.png")
+                arrowPic = QPixmap(self.__PATH + "DownRight.png")
 
             elif arrow == Directions.UpLeft:
-                arrowPic = QPixmap(self.__PATH + "\OctiView\DownRight.png")
+                arrowPic = QPixmap(self.__PATH + "DownRight.png")
 
             qp.drawPixmap(X, Y, self.__SQUARE_SIZE, self.__SQUARE_SIZE, arrowPic)
 
