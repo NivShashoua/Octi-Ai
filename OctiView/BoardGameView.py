@@ -1,38 +1,53 @@
 import sys
 import pathlib
+import OctiModel.BoardGame
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
-import OctiModel.BoardGame
 from OctiModel.Enums import *
 
 
-class BoardGameView(QMainWindow):
+class BoardGameView(QWidget):
 
     """ Constants """
     __WINDOW_LENGTH = 900
-    __WINDOW_WIDTH = 900
+    __WINDOW_WIDTH = 1000
     __SQUARE_SIZE = 125
 
     __NUMBER_OF_ROW = 7
     __NUMBER_OF_COL = 6
 
-    __X_START = (__WINDOW_WIDTH - __SQUARE_SIZE * __NUMBER_OF_COL) // 2
+    __X_START = (__WINDOW_WIDTH - __SQUARE_SIZE * __NUMBER_OF_COL) // 2 - 100
     __Y_START = (__WINDOW_LENGTH - __SQUARE_SIZE * __NUMBER_OF_ROW) // 2
+
+    __INSERT_ARROW_BUTTON_LENGTH = 70
+    __INSERT_ARROW_BUTTON_WIDTH = 100
+    __INSERT_ARROW_BUTTON_X = __X_START + __SQUARE_SIZE * (__NUMBER_OF_COL + 0.5)
+    __INSERT_ARROW_BUTTON_Y = __Y_START + __SQUARE_SIZE * (__NUMBER_OF_ROW - 1)
 
     __ARROW_LENGTH = 30
     __ARROW_WIDTH = 8
 
+    # get the full path of the current project location
+    __PATH = str(pathlib.Path().absolute())
+
     """ Constructor """
     def __init__(self, model):
-        app = QApplication(sys.argv)
+
         super().__init__()
-        self.__board = model
+        self.__board = model    # the board game logic object
         self.setWindowTitle("Octi")
         self.setGeometry(300, 100, self.__WINDOW_WIDTH, self.__WINDOW_LENGTH)
 
+        # create a button to insert arrows
+        self.__insertArrowButton = QPushButton(self)
+        self.__insertArrowButton.setText("Inset Arrow")
+        self.__insertArrowButton.setGeometry(self.__INSERT_ARROW_BUTTON_X,
+                                             self.__INSERT_ARROW_BUTTON_Y,
+                                             self.__INSERT_ARROW_BUTTON_WIDTH,
+                                             self.__INSERT_ARROW_BUTTON_LENGTH)
         self.show()
-        sys.exit(app.exec_())
+
 
     """Override. draw the board"""
     def paintEvent(self, event):
@@ -68,7 +83,6 @@ class BoardGameView(QMainWindow):
 
     """ paint all the pieces on the board and all their arrows """
     def __paintOcts(self, qp):
-        path = str(pathlib.Path().absolute())    # get the full path of the current project location
 
         for octInfo in self.__board.getAllAliveOctInfo():
             octName = octInfo[0]
@@ -78,75 +92,56 @@ class BoardGameView(QMainWindow):
 
             # get the right pic for the oct according to the color
             if octColor == Players.Green:
-                pic = QPixmap(path + "\OctiView\Green_Octagon.png")
+                pic = QPixmap(self.__PATH + "\OctiView\Green_Octagon.png")
 
             else:
-                pic = QPixmap(path + "\OctiView\Red_Octagon.png")
+                pic = QPixmap(self.__PATH + "\OctiView\Red_Octagon.png")
             # draw the oct
-            qp.drawPixmap(oct_X, oct_Y, self.__SQUARE_SIZE, self.__SQUARE_SIZE , pic)
+            qp.drawPixmap(oct_X, oct_Y, self.__SQUARE_SIZE, self.__SQUARE_SIZE, pic)
             # draw all its arrows
             self.__handelArrows(qp, octName, oct_X, oct_Y)
 
     """ paint the arrows of a specific oct.
         get as parameters: 1. the QPainter, 2. the oct name, 3. the X coordinate, 4. the Y coordinate """
     def __handelArrows(self, qp, oct, X, Y):
-        """TODO: complete the function"""
         arrows = self.__board.showAllArrows(oct)
-        center_X = X + (self.__SQUARE_SIZE // 2)    # the X coordinate of the center of the square
-        center_Y = Y + (self.__SQUARE_SIZE // 2)    # the Y coordinate of the center of the square
+
         for arrow in arrows:
-            angle = 0.0  # need to be double
-            arrow_X = center_X
-            arrow_Y = center_Y
+            arrowPic = QPixmap()
+
             if arrow == Directions.Up:
-                angle = angle
-                arrow_X = center_X - 2
-                arrow_Y = center_Y - 50
+                arrowPic = QPixmap(self.__PATH + "\OctiView\\Up.png")
 
             elif arrow == Directions.UpRight:
-                angle = angle + 45
-                arrow_X = center_X + 30
-                arrow_Y = center_Y - 30
+                arrowPic = QPixmap(self.__PATH + "\OctiView\\UpRight.png")
 
             elif arrow == Directions.Right:
-                angle = angle + 90
-                arrow_X = center_X + 30
-                arrow_Y = center_Y
+                arrowPic = QPixmap(self.__PATH + "\OctiView\Right.png")
 
             elif arrow == Directions.DownRight:
-                angle = angle + 135
-                arrow_X = center_X + 30
-                arrow_Y = center_Y + 30
+                arrowPic = QPixmap(self.__PATH + "\OctiView\DownRight.png")
 
             elif arrow == Directions.Down:
-                angle = angle + 180
-                arrow_X = center_X - 2
-                arrow_Y = center_Y + 20
+                arrowPic = QPixmap(self.__PATH + "\OctiView\Down.png")
 
             elif arrow == Directions.DownLeft:
-                angle = angle + 225
-                arrow_X = center_X - 30
-                arrow_Y = center_Y + 30
+                arrowPic = QPixmap(self.__PATH + "\OctiView\DDownLeft.png")
 
             elif arrow == Directions.Left:
-                angle = angle + 270
-                arrow_X = center_X - 30
-                arrow_Y = center_Y
+                arrowPic = QPixmap(self.__PATH + "\OctiView\DownRight.png")
 
             elif arrow == Directions.UpLeft:
-                angle = angle + 315
-                arrow_X = center_X - 30
-                arrow_Y = center_Y - 30
+                arrowPic = QPixmap(self.__PATH + "\OctiView\DownRight.png")
 
-            # qp.translate(arrow_X, arrow_Y)
-            # qp.rotate(-10)
-            arrowView = QRect(arrow_X, arrow_Y, self.__ARROW_WIDTH, self.__ARROW_LENGTH)
-            qp.fillRect(arrowView, QBrush(Qt.red))
-            qp.setPen(QColor(Qt.black))
-            qp.drawRect(arrow_X, arrow_Y, self.__ARROW_WIDTH, self.__ARROW_LENGTH)
-            # qp.translate(0, 0)
-            #  qp.rotate(0)
+            qp.drawPixmap(X, Y, self.__SQUARE_SIZE, self.__SQUARE_SIZE, arrowPic)
 
-
+    """ pop an massage on the screen,
+     with the massage that given as parameter """
     def __showMassage(self, str):
         """TODO: complete the function"""
+        msg = QMessageBox(self)
+        msg.setText(str)
+
+    """ connect a function to the insert arrow button """
+    def insertButton(self):
+        return self.__insertArrowButton
