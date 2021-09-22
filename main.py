@@ -1,9 +1,12 @@
+import sys
+from PyQt5.QtWidgets import *
 import OctiModel.BoardGame
 import OctiView.BoardGameView
+import OctiController.BoardGameController
 from OctiModel.Enums import *
 
 if __name__ == '__main__':
-
+    app = QApplication(sys.argv)
     board = OctiModel.BoardGame.BoardGame()
     board.printBoard()
     board.insertArrow('G1', Directions.Down)
@@ -20,7 +23,10 @@ if __name__ == '__main__':
     board.printBoard()
     print(board.whereToGo('G1'))
     view = OctiView.BoardGameView.BoardGameView(board)
-
+    print("test")
+    controller = OctiController.BoardGameController.BoardGameController(board,
+                                                                        view)
+    sys.exit(app.exec_())
 
 
 
