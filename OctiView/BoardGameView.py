@@ -136,11 +136,18 @@ class BoardGameView(QMainWindow):
 
     """ pop an massage on the screen,
      with the massage that given as parameter """
-    def __showMassage(self, str):
+    def showMassage(self, str):
         """TODO: complete the function"""
-        msg = QMessageBox(self)
+        msg = QMessageBox()
         msg.setText(str)
+        msg.exec_()
 
     """ connect a function to the insert arrow button """
-    def insertButton(self):
-        return self.__insertArrowButton
+    def connectFunctionToInsertButton(self, func):
+        self.__insertArrowButton.clicked.connect(func)
+
+    def mousePressEvent(self, event):
+        x = event.x()
+        y = event.y()
+        print("(", x, ",", y, ")")
+
