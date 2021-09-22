@@ -42,7 +42,7 @@ if __name__ == '__main__':
     board.printBoard()
     print(board.whereToGo('G1'))
     sys.exit(app.exec_())
-    print("nnn")
+
 
 
 
