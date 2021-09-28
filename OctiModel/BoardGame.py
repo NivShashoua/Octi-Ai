@@ -207,6 +207,15 @@ class BoardGame:
                 octObj.setPlace(location)
                 self.__changeTurn() # change the turn
 
+    """ according to the place in the board the function return the name of the oct that is there, if its really there,
+    else return None """
+    def getOctNameFromCordinates(self, coordinates):
+        for oct in self.__listOfAllOctAlive():
+            if oct.getPlace() == coordinates:
+                return oct.getName()
+
+        return None
+
     """ print the current state of the board """
     def printBoard(self):
         print('', end=' ')
