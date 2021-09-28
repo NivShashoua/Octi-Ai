@@ -5,28 +5,11 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from OctiModel.Enums import *
-
+from OctiView.ConstantView import *
 
 class BoardGameView(QMainWindow):
 
-    """ Constants """
-    __WINDOW_LENGTH = 900
-    __WINDOW_WIDTH = 1000
-    __SQUARE_SIZE = 125
-
-    __NUMBER_OF_ROW = 7
-    __NUMBER_OF_COL = 6
-
-    # the coordinates where the board should be paint in
-    __X_START = (__WINDOW_WIDTH - __SQUARE_SIZE * __NUMBER_OF_COL) // 2 - 100
-    __Y_START = (__WINDOW_LENGTH - __SQUARE_SIZE * __NUMBER_OF_ROW) // 2
-
-    # all the parameters needed for the Insert Arrow button
-    __INSERT_ARROW_BUTTON_LENGTH = 70
-    __INSERT_ARROW_BUTTON_WIDTH = 100
-    __INSERT_ARROW_BUTTON_X = __X_START + __SQUARE_SIZE * (__NUMBER_OF_COL + 0.5)
-    __INSERT_ARROW_BUTTON_Y = __Y_START + __SQUARE_SIZE * (__NUMBER_OF_ROW - 1)
-
+    """ Private Constants """
     # get the full path of the current project location
     __PATH = str(pathlib.Path().absolute()) + "\OctiView\Pictures\\"
 
@@ -36,19 +19,21 @@ class BoardGameView(QMainWindow):
         super().__init__()
         self.__board = model    # the board game logic object
         self.setWindowTitle("Octi")
-        self.setGeometry(300, 100, self.__WINDOW_WIDTH, self.__WINDOW_LENGTH)
+        self.setGeometry(300, 100, WINDOW_WIDTH, WINDOW_LENGTH)
 
         # create a button to insert arrows
         self.__insertArrowButton = QPushButton(self)
         self.__insertArrowButton.setText("Inset Arrow")
-        self.__insertArrowButton.setGeometry(self.__INSERT_ARROW_BUTTON_X,
-                                             self.__INSERT_ARROW_BUTTON_Y,
-                                             self.__INSERT_ARROW_BUTTON_WIDTH,
-                                             self.__INSERT_ARROW_BUTTON_LENGTH)
+        self.__insertArrowButton.setGeometry(INSERT_ARROW_BUTTON_X,
+                                             INSERT_ARROW_BUTTON_Y,
+                                             INSERT_ARROW_BUTTON_WIDTH,
+                                             INSERT_ARROW_BUTTON_LENGTH)
         self.show()
 
+        # this variable need to get a pointer to mousePressAction function from the class OctiController
+        self.mousePressFunction = None
 
-    """Override. draw the board"""
+    """Override. draw the board game"""
     def paintEvent(self, event):
         qp = QPainter()
         qp.begin(self)
@@ -62,23 +47,23 @@ class BoardGameView(QMainWindow):
     def __paintBoard(self, qp):
         qp.setPen(QColor(Qt.black))
 
-        for row in range(self.__NUMBER_OF_ROW):
-            for col in range(self.__NUMBER_OF_COL):
+        for row in range(NUMBER_OF_ROW):
+            for col in range(NUMBER_OF_COL):
                 # paint the base of the green player in green
-                if row == 1 and col != 0 and col != self.__NUMBER_OF_COL - 1:
-                    qp.fillRect(col * self.__SQUARE_SIZE + self.__X_START, row * self.__SQUARE_SIZE + self.__Y_START,
-                                self.__SQUARE_SIZE, self.__SQUARE_SIZE, QBrush(Qt.green))
+                if row == 1 and col != 0 and col != NUMBER_OF_COL - 1:
+                    qp.fillRect(col * SQUARE_SIZE + X_START, row * SQUARE_SIZE + Y_START,
+                                SQUARE_SIZE, SQUARE_SIZE, QBrush(Qt.green))
                 # paint the base of the red player in red
-                elif row == self.__NUMBER_OF_ROW - 2 and col != 0 and col != self.__NUMBER_OF_COL - 1:
-                    qp.fillRect(col * self.__SQUARE_SIZE + self.__X_START, row * self.__SQUARE_SIZE + self.__Y_START,
-                                self.__SQUARE_SIZE, self.__SQUARE_SIZE, QBrush(Qt.red))
+                elif row == NUMBER_OF_ROW - 2 and col != 0 and col != NUMBER_OF_COL - 1:
+                    qp.fillRect(col * SQUARE_SIZE + X_START, row * SQUARE_SIZE + Y_START,
+                                SQUARE_SIZE, SQUARE_SIZE, QBrush(Qt.red))
                 # paint all the regular square in light gray
                 else:
-                    qp.fillRect(col * self.__SQUARE_SIZE + self.__X_START, row * self.__SQUARE_SIZE + self.__Y_START,
-                                self.__SQUARE_SIZE, self.__SQUARE_SIZE, QBrush(Qt.lightGray))
+                    qp.fillRect(col * SQUARE_SIZE + X_START, row * SQUARE_SIZE + Y_START,
+                                SQUARE_SIZE, SQUARE_SIZE, QBrush(Qt.lightGray))
 
-                qp.drawRect(col * self.__SQUARE_SIZE + self.__X_START, row * self.__SQUARE_SIZE + self.__Y_START,
-                            self.__SQUARE_SIZE, self.__SQUARE_SIZE)
+                qp.drawRect(col * SQUARE_SIZE + X_START, row * SQUARE_SIZE + Y_START,
+                            SQUARE_SIZE, SQUARE_SIZE)
 
     """ paint all the pieces on the board and all their arrows """
     def __paintOcts(self, qp):
@@ -86,8 +71,8 @@ class BoardGameView(QMainWindow):
         for octInfo in self.__board.getAllAliveOctInfo():
             octName = octInfo[0]
             octColor = octInfo[1]
-            oct_X = octInfo[2][1] * self.__SQUARE_SIZE + self.__X_START   # the oct X coordinate in the view
-            oct_Y = octInfo[2][0]  * self.__SQUARE_SIZE + self.__Y_START  # the oct Y coordinate in the view
+            oct_X = octInfo[2][1] * SQUARE_SIZE + X_START   # the oct X coordinate in the view
+            oct_Y = octInfo[2][0] * SQUARE_SIZE + Y_START  # the oct Y coordinate in the view
 
             # get the right pic for the oct according to the color
             if octColor == Players.Green:
@@ -96,7 +81,7 @@ class BoardGameView(QMainWindow):
             else:
                 pic = QPixmap(self.__PATH + "Red_Octagon.png")
             # draw the oct
-            qp.drawPixmap(oct_X, oct_Y, self.__SQUARE_SIZE, self.__SQUARE_SIZE, pic)
+            qp.drawPixmap(oct_X, oct_Y, SQUARE_SIZE, SQUARE_SIZE, pic)
             # draw all its arrows
             self.__handelArrows(qp, octName, oct_X, oct_Y)
 
@@ -132,12 +117,11 @@ class BoardGameView(QMainWindow):
             elif arrow == Directions.UpLeft:
                 arrowPic = QPixmap(self.__PATH + "DownRight.png")
 
-            qp.drawPixmap(X, Y, self.__SQUARE_SIZE, self.__SQUARE_SIZE, arrowPic)
+            qp.drawPixmap(X, Y, SQUARE_SIZE, SQUARE_SIZE, arrowPic)
 
     """ pop an massage on the screen,
      with the massage that given as parameter """
     def showMassage(self, str):
-        """TODO: complete the function"""
         msg = QMessageBox()
         msg.setText(str)
         msg.exec_()
@@ -146,8 +130,15 @@ class BoardGameView(QMainWindow):
     def connectFunctionToInsertButton(self, func):
         self.__insertArrowButton.clicked.connect(func)
 
+    """ put the pointer of the function "mousePressAction" in the class 
+    OctiController in the variable mousePressFunction  """
+    def connectFunctionToMousePress(self, func):
+        self.mousePressFunction = func
+
+    """Override. when the mouse is press run the function "mousePressAction" in the class OctiController"""
     def mousePressEvent(self, event):
-        x = event.x()
-        y = event.y()
-        print("(", x, ",", y, ")")
+        self.mousePressFunction(event)
+
+
+
 
