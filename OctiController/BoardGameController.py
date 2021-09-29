@@ -29,17 +29,21 @@ class BoardGameController():
     def insertArrow(self):
         self.__view.showMassage("NANIII")
 
+    """ if the mouse pressed on an oct show where it can go """
     def mousePressAction(self, event):
         x = event.x()
         y = event.y()
         matrixRow = (y - Y_START) // SQUARE_SIZE
         matrixCol = (x - X_START) // SQUARE_SIZE
 
+        # if you pressed out of bound, changed the coordinates to be (-1, -1)
         if matrixRow >= NUMBER_OF_ROW or matrixRow < 0 or matrixCol >= NUMBER_OF_COL or matrixCol < 0:
             matrixRow = -1
             matrixCol = -1
 
         coordinates = (matrixRow, matrixCol)
         octName = self.__board.getOctNameFromCordinates(coordinates)
+        self.__view.clickedOct(octName)
+        self.__view.repaint()
         print("(", matrixRow, ",", matrixCol, ")")
         print(octName)
