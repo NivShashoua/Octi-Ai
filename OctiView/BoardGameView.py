@@ -33,13 +33,15 @@ class BoardGameView(QMainWindow):
         # this variable need to get a pointer to mousePressAction function from the class OctiController
         self.mousePressFunction = None
 
+        self.chosenOct = None  # if the player clicked on an oct, save its name
+
     """Override. draw the board game"""
     def paintEvent(self, event):
         qp = QPainter()
         qp.begin(self)
-        qp.setPen(QColor(Qt.black))
         self.__paintBoard(qp)
         self.__paintOcts(qp)
+        self.__coloreWhiteSquaers(qp)
 
         qp.end()
 
@@ -139,6 +141,19 @@ class BoardGameView(QMainWindow):
     def mousePressEvent(self, event):
         self.mousePressFunction(event)
 
+    """ paint a chosen square in white """
+    def clickedOct(self, octName):
+        self.chosenOct = octName
 
-
-
+    def __coloreWhiteSquaers(self, qp):
+        # if the player didn't choose his oct
+        if self.chosenOct is None:
+            return
+        for row, col in self.__board.whereToGo(self.chosenOct):
+            qp.fillRect(col * SQUARE_SIZE + X_START,
+                        row * SQUARE_SIZE + Y_START,
+                        SQUARE_SIZE, SQUARE_SIZE, QBrush(Qt.white))
+            qp.setPen(QColor(Qt.black))
+            qp.drawRect(col * SQUARE_SIZE + X_START,
+                        row * SQUARE_SIZE + Y_START,
+                        SQUARE_SIZE, SQUARE_SIZE)
