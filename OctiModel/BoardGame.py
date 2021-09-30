@@ -98,8 +98,7 @@ class BoardGame:
     """ get the coordinates near the wanted location, according to the direction. 
         if the new location is out of bound then return (-1, -1) """
     def __getCoordinate(self, location, direction):
-        row = location[0]
-        col = location[1]
+        row, col = location
 
         if direction == Directions.Up:
             if row == 0:
@@ -107,29 +106,29 @@ class BoardGame:
             row = row - 1
 
         elif direction == Directions.UpRight:
-            if row == 0 or col == self.__BOARD_WIDTH:
+            if row == 0 or col == self.__BOARD_WIDTH - 1:
                 return self.__LocationError
             row = row - 1
             col = col + 1
 
         elif direction == Directions.Right:
-            if col == self.__BOARD_WIDTH:
+            if col == self.__BOARD_WIDTH - 1:
                 return self.__LocationError
             col = col + 1
 
         elif direction == Directions.DownRight:
-            if row == self.__BOARD_LENGTH or col == self.__BOARD_WIDTH:
+            if row == self.__BOARD_LENGTH - 1 or col == self.__BOARD_WIDTH - 1:
                 return self.__LocationError
             row = row + 1
             col = col + 1
 
         elif direction == Directions.Down:
-            if row == self.__BOARD_LENGTH:
+            if row == self.__BOARD_LENGTH - 1:
                 return self.__LocationError
             row = row + 1
 
         elif direction == Directions.DownLeft:
-            if row == self.__BOARD_LENGTH or col == 0:
+            if row == self.__BOARD_LENGTH - 1 or col == 0:
                 return self.__LocationError
             row = row + 1
             col = col - 1
@@ -196,16 +195,18 @@ class BoardGame:
 
         return possibleMoves
 
-    """ move an oct to a specific coordinates"""
-    def move(self, oct, row, col):
-        location = (row, col)
+    """ move an oct to a specific coordinates
+        if the move succeed return True, else return False"""
+    def move(self, oct, coordinates):
         # check if its a legal move for this oct.
-        if location in self.whereToGo(oct):
+        if coordinates in self.whereToGo(oct):
             octObj = self.__octObject(oct)
             # check that the player that trying to move the oct is its owner.
             if octObj.getPlayer() == self.__turn:
-                octObj.setPlace(location)
+                octObj.setPlace(coordinates)
                 self.__changeTurn() # change the turn
+                return True
+        return False
 
     """ according to the place in the board the function return the name of the oct that is there, if its really there,
     else return None """
