@@ -41,7 +41,7 @@ class BoardGameView(QMainWindow):
         qp.begin(self)
         self.__paintBoard(qp)
         self.__paintOcts(qp)
-        self.__coloreWhiteSquaers(qp)
+        self.__colorWhiteSquares(qp)
 
         qp.end()
 
@@ -145,7 +145,8 @@ class BoardGameView(QMainWindow):
     def clickedOct(self, octName):
         self.__chosenOct = octName
 
-    def __coloreWhiteSquaers(self, qp):
+    """ color the possible moves of the chosen oct(the one that the user clicked on) """
+    def __colorWhiteSquares(self, qp):
         # if the player didn't choose his oct
         if self.__chosenOct is None:
             return
@@ -159,3 +160,6 @@ class BoardGameView(QMainWindow):
                         row * SQUARE_SIZE + Y_START,
                         SQUARE_SIZE, SQUARE_SIZE)
 
+    """ return the name of the chosen oct. if the user didn't choose an oct return None """
+    def getChosenOct(self):
+        return self.__chosenOct
