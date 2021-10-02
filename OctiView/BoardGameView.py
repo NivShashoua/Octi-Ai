@@ -35,41 +35,51 @@ class BoardGameView(QMainWindow):
                                              INSERT_ARROW_BUTTON_LENGTH)
         self.show()
 
+        # the insert arrow window
         self.__insertWindow = QWidget()
         self.__insertWindow.setGeometry(INSERT_WINDOW_X, INSERT_WINDOW_Y, INSERT_WINDOW_WIDTH, INSERT_WINDOW_LENGTH)
         self.__insertWindow.setWindowTitle("Insert an Arrow")
+        self.__buttons = []     # list of all the buttons in the insert arrow window
 
         self.__UpButton = QPushButton(self.__insertWindow)
         self.__UpButton.setText("Up")
         self.__UpButton.setGeometry(UP_BUTTON_X, UP_BUTTON_Y, BUTTON_SIZE, BUTTON_SIZE)
+        self.__buttons.append(self.__UpButton)
 
         self.__UpRightButton = QPushButton(self.__insertWindow)
         self.__UpRightButton.setText("Up Right")
         self.__UpRightButton.setGeometry(UP_RIGHT_BUTTON_X, UP_RIGHT_BUTTON_Y, BUTTON_SIZE, BUTTON_SIZE)
+        self.__buttons.append(self.__UpRightButton)
 
         self.__RightButton = QPushButton(self.__insertWindow)
         self.__RightButton.setText("Right")
         self.__RightButton.setGeometry(RIGHT_BUTTON_X, RIGHT_BUTTON_Y, BUTTON_SIZE, BUTTON_SIZE)
+        self.__buttons.append(self.__RightButton)
 
         self.__DownRightButton = QPushButton(self.__insertWindow)
         self.__DownRightButton.setText("Down Right")
         self.__DownRightButton.setGeometry(DOWN_RIGHT_BUTTON_X, DOWN_RIGHT_BUTTON_Y, BUTTON_SIZE, BUTTON_SIZE)
+        self.__buttons.append(self.__DownRightButton)
 
         self.__DownButton = QPushButton(self.__insertWindow)
         self.__DownButton.setText("Down")
         self.__DownButton.setGeometry(DOWN_BUTTON_X, DOWN_BUTTON_Y, BUTTON_SIZE, BUTTON_SIZE)
+        self.__buttons.append(self.__DownButton)
 
         self.__DownLeftButton = QPushButton(self.__insertWindow)
         self.__DownLeftButton.setText("Down Left")
         self.__DownLeftButton.setGeometry(DOWN_LEFT_BUTTON_X, DOWN_LEFT_BUTTON_Y, BUTTON_SIZE, BUTTON_SIZE)
+        self.__buttons.append(self.__DownLeftButton)
 
         self.__LeftButton = QPushButton(self.__insertWindow)
         self.__LeftButton.setText("Left")
         self.__LeftButton.setGeometry(LEFT_BUTTON_X, LEFT_BUTTON_Y, BUTTON_SIZE, BUTTON_SIZE)
+        self.__buttons.append(self.__LeftButton)
 
-        self.__LeftButton = QPushButton(self.__insertWindow)
-        self.__LeftButton.setText("Up Left")
-        self.__LeftButton.setGeometry(UP_LEFT_BUTTON_X, UP_LEFT_BUTTON_Y, BUTTON_SIZE, BUTTON_SIZE)
+        self.__UpLeftButton = QPushButton(self.__insertWindow)
+        self.__UpLeftButton.setText("Up Left")
+        self.__UpLeftButton.setGeometry(UP_LEFT_BUTTON_X, UP_LEFT_BUTTON_Y, BUTTON_SIZE, BUTTON_SIZE)
+        self.__buttons.append(self.__UpLeftButton)
 
     """ Override. draw the board game """
     def paintEvent(self, event):
@@ -150,10 +160,10 @@ class BoardGameView(QMainWindow):
                 arrowPic = QPixmap(self.__PATH + "DownLeft.png")
 
             elif arrow == Directions.Left:
-                arrowPic = QPixmap(self.__PATH + "DownRight.png")
+                arrowPic = QPixmap(self.__PATH + "Left.png")
 
             elif arrow == Directions.UpLeft:
-                arrowPic = QPixmap(self.__PATH + "DownRight.png")
+                arrowPic = QPixmap(self.__PATH + "UpLeft.png")
 
             qp.drawPixmap(X, Y, SQUARE_SIZE, SQUARE_SIZE, arrowPic)
 
@@ -167,6 +177,11 @@ class BoardGameView(QMainWindow):
     """ connect a function to the insert arrow button """
     def connectFunctionToInsertButton(self, func):
         self.__insertArrowButton.clicked.connect(func)
+
+    """ connect a function to all the buttons in the insert arrow windows """
+    def connectFunctionToAllButtons(self, func):
+        for button in self.__buttons:
+            button.clicked.connect(func)
 
     """ put the pointer of the function "mousePressAction" in the class 
     OctiController in the variable mousePressFunction  """
@@ -200,7 +215,10 @@ class BoardGameView(QMainWindow):
     def getChosenOct(self):
         return self.__chosenOct
 
-    """  """
+    """ show the insert arrow window to the user """
     def showInsertArrowWindow(self):
-
         self.__insertWindow.show()
+
+    """ close the insert arrow window """
+    def closeInsertArrowWindow(self):
+        self.__insertWindow.close()
