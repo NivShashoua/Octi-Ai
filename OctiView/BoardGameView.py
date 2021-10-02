@@ -24,7 +24,7 @@ class BoardGameView(QMainWindow):
         self.__chosenOct = None  # if the player clicked on an oct, save its name
 
         self.setWindowTitle("Octi")
-        self.setGeometry(300, 100, WINDOW_WIDTH, WINDOW_LENGTH)
+        self.setGeometry(WINDOW_X, WINDOW_Y, WINDOW_WIDTH, WINDOW_LENGTH)
 
         # create a button to insert arrows
         self.__insertArrowButton = QPushButton(self)
@@ -35,7 +35,43 @@ class BoardGameView(QMainWindow):
                                              INSERT_ARROW_BUTTON_LENGTH)
         self.show()
 
-    """Override. draw the board game"""
+        self.__insertWindow = QWidget()
+        self.__insertWindow.setGeometry(INSERT_WINDOW_X, INSERT_WINDOW_Y, INSERT_WINDOW_WIDTH, INSERT_WINDOW_LENGTH)
+        self.__insertWindow.setWindowTitle("Insert an Arrow")
+
+        self.__UpButton = QPushButton(self.__insertWindow)
+        self.__UpButton.setText("Up")
+        self.__UpButton.setGeometry(UP_BUTTON_X, UP_BUTTON_Y, BUTTON_SIZE, BUTTON_SIZE)
+
+        self.__UpRightButton = QPushButton(self.__insertWindow)
+        self.__UpRightButton.setText("Up Right")
+        self.__UpRightButton.setGeometry(UP_RIGHT_BUTTON_X, UP_RIGHT_BUTTON_Y, BUTTON_SIZE, BUTTON_SIZE)
+
+        self.__RightButton = QPushButton(self.__insertWindow)
+        self.__RightButton.setText("Right")
+        self.__RightButton.setGeometry(RIGHT_BUTTON_X, RIGHT_BUTTON_Y, BUTTON_SIZE, BUTTON_SIZE)
+
+        self.__DownRightButton = QPushButton(self.__insertWindow)
+        self.__DownRightButton.setText("Down Right")
+        self.__DownRightButton.setGeometry(DOWN_RIGHT_BUTTON_X, DOWN_RIGHT_BUTTON_Y, BUTTON_SIZE, BUTTON_SIZE)
+
+        self.__DownButton = QPushButton(self.__insertWindow)
+        self.__DownButton.setText("Down")
+        self.__DownButton.setGeometry(DOWN_BUTTON_X, DOWN_BUTTON_Y, BUTTON_SIZE, BUTTON_SIZE)
+
+        self.__DownLeftButton = QPushButton(self.__insertWindow)
+        self.__DownLeftButton.setText("Down Left")
+        self.__DownLeftButton.setGeometry(DOWN_LEFT_BUTTON_X, DOWN_LEFT_BUTTON_Y, BUTTON_SIZE, BUTTON_SIZE)
+
+        self.__LeftButton = QPushButton(self.__insertWindow)
+        self.__LeftButton.setText("Left")
+        self.__LeftButton.setGeometry(LEFT_BUTTON_X, LEFT_BUTTON_Y, BUTTON_SIZE, BUTTON_SIZE)
+
+        self.__LeftButton = QPushButton(self.__insertWindow)
+        self.__LeftButton.setText("Up Left")
+        self.__LeftButton.setGeometry(UP_LEFT_BUTTON_X, UP_LEFT_BUTTON_Y, BUTTON_SIZE, BUTTON_SIZE)
+
+    """ Override. draw the board game """
     def paintEvent(self, event):
         qp = QPainter()
         qp.begin(self)
@@ -163,3 +199,8 @@ class BoardGameView(QMainWindow):
     """ return the name of the chosen oct. if the user didn't choose an oct return None """
     def getChosenOct(self):
         return self.__chosenOct
+
+    """  """
+    def showInsertArrowWindow(self):
+
+        self.__insertWindow.show()
