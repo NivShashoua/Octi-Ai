@@ -27,7 +27,10 @@ class BoardGameController():
 
     """" pop the windows to insert an arrow, when cilcked the insert an arrow button """
     def insertArrow(self):
-        self.__view.showMassage("NANIII")
+        if self.__view.getChosenOct() is None:
+            self.__view.showMassage("you have to clicked on the oct you want to insert arrows first.")
+        else:
+            self.__view.showInsertArrowWindow()
 
     """ if the mouse pressed on an oct show where it can go """
     def mousePressAction(self, event):
