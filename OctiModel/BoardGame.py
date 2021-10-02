@@ -65,14 +65,15 @@ class BoardGame:
                 return True
         return False
 
-    """ Insert an arrow in your turn """
+    """ Insert an arrow in your turn 
+        :return True if the insert succeeded, and false if there is an arrow already inside"""
     def insertArrow(self, oct, arrow):
         octObj = self.__octObject(oct)
         if octObj in self.__listOfAllOctAlive() and octObj.getPlayer() == self.__turn and self.__playerArrowsNotEmpty():
             if not octObj.insertArrow(arrow):
-                return  # if there is already an arrow inside
+                return False    # if there is already an arrow inside
         else:
-            return   # if the oct symbol was illegal or its not the player turn, do nothing
+            return False  # if the oct symbol was illegal or its not the player turn, do nothing
 
         # decrease one arrow to the player who used it
         if self.__turn == Players.Green:
@@ -80,7 +81,8 @@ class BoardGame:
         else:
             self.__redArrows = self.__redArrows - 1
 
-        self.__changeTurn() # change the turn
+        self.__changeTurn()     # change the turn
+        return True
 
     """ given an oct name the function return a list of all the arrows it have """
     def showAllArrows(self, oct):
