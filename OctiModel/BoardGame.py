@@ -219,6 +219,36 @@ class BoardGame:
 
         return None
 
+    """ :return the player who one (Players.green or Players.red). if no one one return None """
+    def isGoalState(self):
+
+        greenGoalCoordinates = [(5, 1), (5, 2), (5, 3), (5, 4)]
+        AllGreenOctDead = True
+        redGoalCoordinates = [(1, 1), (1, 2), (1, 3), (1, 4)]
+        AllRedOctDead = True
+        for oct in self.__listOfAllOctAlive():
+            if oct.getPlayer() == Players.Green:
+                AllGreenOctDead = False     # the green player still in the game, not dead yet
+
+                # if one oct from the green got to the goal coordinates
+                if oct.getPlace() in greenGoalCoordinates:
+                    return Players.Green
+
+            elif oct.getPlayer() == Players.Red:
+                AllRedOctDead = False       # the red player still in the game, not dead yet
+
+                # if one oct from the red got to the goal coordinates
+                if oct.getPlace() in redGoalCoordinates:
+                    return Players.Red
+        # all the green oct are dead, red won
+        if AllGreenOctDead:
+            return Players.Red
+        # all the red oct are dead, green won
+        if AllRedOctDead:
+            return Players.Green
+
+        return None     # no one won
+
     """ print the current state of the board """
     def printBoard(self):
         print('', end=' ')
