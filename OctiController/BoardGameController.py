@@ -16,6 +16,7 @@ class BoardGameController():
         self.__board = model
         self.__view = view
 
+        # remember the chosen oct before the insert arrow window pops. exist so the player can't cheat
         self.__chosenOctInsertArrow = None
 
         # when clicking the insert button run the insertArrow function (connect between the button and this function)
@@ -71,6 +72,7 @@ class BoardGameController():
 
         if succeeded:
             self.__view.closeInsertArrowWindow()    # close the insert arrow window
+            self.__view.repaint()
         else:
             self.__view.showMassage("this arrow already inside this oct")
 
@@ -91,6 +93,12 @@ class BoardGameController():
             if self.__board.move(self.__view.getChosenOct(), coordinates):
                 self.__view.clickedOct(None)
                 self.__view.repaint()
+                # check if some player won
+                winner = self.__board.isGoalState()
+                if winner == Players.Green:
+                    self.__view.showMassage("The Green Player Won!!!")
+                elif winner == Players.Red:
+                    self.__view.showMassage("The Red Player Won!!!")
                 return
 
         octName = self.__board.getOctNameFromCordinates(coordinates)
