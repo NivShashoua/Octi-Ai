@@ -90,9 +90,14 @@ class BoardGameController():
 
         # if the user clicked on an oct he can move it if he clicked on a possible move
         if self.__view.getChosenOct() is not None:
-            if self.__board.move(self.__view.getChosenOct(), coordinates):
+            possibleEatenOcts = self.__board.move(self.__view.getChosenOct(), coordinates)
+            if possibleEatenOcts is not None:
                 self.__view.clickedOct(None)
                 self.__view.repaint()
+
+                # ask the user if he want to eat the octs
+                self.__handleQuestionBox(possibleEatenOcts)
+
                 # check if some player won
                 winner = self.__board.isGoalState()
                 if winner == Players.Green:
@@ -101,8 +106,19 @@ class BoardGameController():
                     self.__view.showMassage("The Red Player Won!!!")
                 return
 
+        # paint in white all the possible moves for the chosen oct
         octName = self.__board.getOctNameFromCordinates(coordinates)
         self.__view.clickedOct(octName)
         self.__view.repaint()
         print("(", matrixRow, ",", matrixCol, ")")
         print(octName)
+
+    """ pop a question box that ask the user if he want to eat a certain oct """
+    def __handleQuestionBox(self, allEatenOct):
+        print(allEatenOct)
+        for oct in allEatenOct:
+            buttonReply = self.__view.showQuestionBox("Do you want to eat the oct: " + oct + " ?")
+            if buttonReply == QMessageBox.Yes:
+                self.__board.kill(oct)
+                self.__board.printBoard()
+
