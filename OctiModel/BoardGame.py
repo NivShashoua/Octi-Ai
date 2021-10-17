@@ -35,12 +35,12 @@ class BoardGame:
 
     """ return a list of all the octs that are alive"""
     def __listOfAllOctAlive(self):
-        allOct = self.__listOfAllOct()
-        for oct in allOct:
-            # if the oct is dead get him out of the list
-            if not oct.isAlive():
-                allOct.remove(oct)
-        return allOct
+        allAliveOct = []
+        for oct in self.__listOfAllOct():
+            # if the oct is alive get him inside the list
+            if oct.isAlive():
+                allAliveOct.append(oct)
+        return allAliveOct
 
     """ convert oct name to oct object """
     def __octObject(self, oct):
@@ -150,30 +150,34 @@ class BoardGame:
         return newLocation
 
     """ check the location is not occupied by other alive oct. 
-        if the place is occupied return true, if not false. """
+        if the place is occupied return the name of the oct that is there, if not return None. """
     def __isOccupied(self, location):
         for oct in self.__listOfAllOctAlive():
             if oct.getPlace() == location:
-                return True
-        return False
+                return oct.getName()
+        return None
 
-    """ return a list of all the locations the oct can move after the jump( can be multiple jump) """
-    def __handelJump(self, location, arrows, possibleJumps):
+    """ update the 'possibleJumpsAndEatenOct' list with all the locations the oct can move after
+        the jump( can be multiple jump), and the list of all the octs it can eat """
+    def __handelJump(self, location, arrows, possibleJumpsAndEatenOct, eatenOcts):
         # the stop condition is check if there wasn't a change in the list possibleJumps
-        if location != self.__LocationError and not self.__isOccupied(location) and location not in possibleJumps:
-            possibleJumps.append(location)
+        if location != self.__LocationError and self.__isOccupied(location) is None\
+                and location not in possibleJumpsAndEatenOct:
+            possibleJumpsAndEatenOct[location] = eatenOcts  # add the new possible location with the possible eaten octs
             for direction in arrows:
                 newLocation = self.__getCoordinate(location, direction)
                 # you can do multiple jumps only if there are other octs next to it
-                if newLocation != self.__LocationError and self.__isOccupied(newLocation):
+                if newLocation != self.__LocationError and self.__isOccupied(newLocation) is not None:
+                    # create a new eaten oct list that have the old eaten octs plus the new one
+                    newEatenOct = eatenOcts + [self.__isOccupied(newLocation)]
                     newJumpLocation = self.__getCoordinate(newLocation, direction)
-                    self.__handelJump(newJumpLocation, arrows, possibleJumps)
+                    self.__handelJump(newJumpLocation, arrows, possibleJumpsAndEatenOct, newEatenOct)
 
-        return possibleJumps
-
-    """ What are all the possible movement for an oct """
+    """ What are all the possible movement for an oct, and the possible eaten octs.
+        parameter - String of the oct name. return - dictionary of the possible moves, and the octs it eat """
     def whereToGo(self, oct):
-        possibleMoves = []
+        # a dictionary that the key is the location of the possible moves and the values are the eaten octs
+        possibleMovesAndEatenOct = {}
         octObj = self.__octObject(oct)
         location = octObj.getPlace()
 
@@ -181,34 +185,39 @@ class BoardGame:
         if octObj in self.__listOfAllOctAlive():
             arrows = octObj.showAllArrows()
         else:
-            return  # if the oct symbol was illegal or it's not the right player, do nothing
+            return  # if the oct symbol was illegal or the oct is already dead, do nothing
 
         for direction in arrows:
             newLocation = self.__getCoordinate(location, direction)
             if newLocation != self.__LocationError:
-                # if the near location is not occupied, add it to the list: possibleMoves
-                if not self.__isOccupied(newLocation):
-                    possibleMoves.append(newLocation)
+                # if the near location is not occupied, add it to the dictionary: possibleMovesAndEatenOct,
+                # with empty list of eaten octs
+                if self.__isOccupied(newLocation) is None:
+                    possibleMovesAndEatenOct[newLocation] = []
 
                 # if there might be a jump
                 else:
+                    # list of all the possible eaten octs
+                    eatenOcts = [self.__isOccupied(newLocation)]
+                    # enter the name of the oct that occupied the area
                     jumpLocation = self.__getCoordinate(newLocation, direction)
-                    possibleMoves = possibleMoves + self.__handelJump(jumpLocation, arrows, [])
+                    self.__handelJump(jumpLocation, arrows, possibleMovesAndEatenOct, eatenOcts)
 
-        return possibleMoves
+        return possibleMovesAndEatenOct
 
     """ move an oct to a specific coordinates
         if the move succeed return True, else return False"""
     def move(self, oct, coordinates):
+        possibleMovesAndEatenOct = self.whereToGo(oct)
         # check if its a legal move for this oct.
-        if coordinates in self.whereToGo(oct):
+        if coordinates in possibleMovesAndEatenOct.keys():
             octObj = self.__octObject(oct)
             # check that the player that trying to move the oct is its owner.
             if octObj.getPlayer() == self.__turn:
                 octObj.setPlace(coordinates)
-                self.__changeTurn() # change the turn
-                return True
-        return False
+                self.__changeTurn()     # change the turn
+                return possibleMovesAndEatenOct.get(coordinates)
+        return None
 
     """ according to the place in the board the function return the name of the oct that is there, if its really there,
     else return None """
@@ -249,6 +258,24 @@ class BoardGame:
 
         return None     # no one won
 
+    """ kill/eat this oct """
+    def kill(self, oct):
+        self.__octObject(oct).death()
+
+    """ return how many arrows left for the player given by the parameter """
+    def arrowsLeft(self, player):
+        if player == Players.Green:
+            return str(self.__greenArrows)
+        elif player == Players.Red:
+            return str(self.__redArrows)
+
+    """ return the player that need to play now """
+    def whoseTurn(self):
+        if self.__turn == Players.Green:
+            return "Green"
+        else:
+            return "Red"
+
     """ print the current state of the board """
     def printBoard(self):
         print('', end=' ')
@@ -264,4 +291,3 @@ class BoardGame:
             print("\n", end=' ')
         print("turn:", self.__turn)
         print('\n')
-
