@@ -110,15 +110,11 @@ class BoardGameController():
         octName = self.__board.getOctNameFromCordinates(coordinates)
         self.__view.clickedOct(octName)
         self.__view.repaint()
-        print("(", matrixRow, ",", matrixCol, ")")
-        print(octName)
+
 
     """ pop a question box that ask the user if he want to eat a certain oct """
     def __handleQuestionBox(self, allEatenOct):
-        print(allEatenOct)
         for oct in allEatenOct:
             buttonReply = self.__view.showQuestionBox("Do you want to eat the oct: " + oct + " ?")
             if buttonReply == QMessageBox.Yes:
                 self.__board.kill(oct)
-                self.__board.printBoard()
-
