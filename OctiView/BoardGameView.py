@@ -26,6 +26,18 @@ class BoardGameView(QMainWindow):
         self.setWindowTitle("Octi")
         self.setGeometry(WINDOW_X, WINDOW_Y, WINDOW_WIDTH, WINDOW_LENGTH)
 
+        # all the labels
+        self.__turnLabel = QLabel("TURN: ", self)
+        self.__turnLabel.setFont(QFont('Times font', 13))
+        self.__turnLabel.setGeometry(TURN_LABEL_X, TURN_LABEL_Y, LABEL_SIZE, LABEL_SIZE)
+
+        self.__greenArrowsLabel = QLabel("GREEN ARROWS: ", self)
+        self.__greenArrowsLabel.setGeometry(GREEN_ARROW_LABEL_X, GREEN_ARROW_LABEL_Y, LABEL_SIZE, LABEL_SIZE)
+
+        self.__redArrowLabel = QLabel("RED ARROWS: ", self)
+        self.__redArrowLabel.setGeometry(RED_ARROW_LABEL_X, RED_ARROW_LABEL_Y, LABEL_SIZE, LABEL_SIZE)
+
+
         # create a button to insert arrows
         self.__insertArrowButton = QPushButton(self)
         self.__insertArrowButton.setText("Inset Arrow")
@@ -88,6 +100,10 @@ class BoardGameView(QMainWindow):
         self.__paintBoard(qp)
         self.__paintOcts(qp)
         self.__colorWhiteSquares(qp)
+
+        self.__turnLabel.setText("TURN: " + self.__board.whoseTurn())
+        self.__greenArrowsLabel.setText("GREEN ARROWS: " + self.__board.arrowsLeft(Players.Green))
+        self.__redArrowLabel.setText("RED ARROWS: " + self.__board.arrowsLeft(Players.Red))
 
         qp.end()
 
@@ -174,6 +190,14 @@ class BoardGameView(QMainWindow):
         msg.setText(str)
         msg.exec_()
 
+    """ pop a question box on the screen.
+        parameter - string that you want to show on screen.
+        return - QMessageBox.StandardButton object (the user clicked "Yes" or the "No" button) """
+    def showQuestionBox(self, str):
+        buttonReply = QMessageBox.question(self, "DO YOU WANT TO EAT?", str,
+                                           QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        return buttonReply
+
     """ connect a function to the insert arrow button """
     def connectFunctionToInsertButton(self, func):
         self.__insertArrowButton.clicked.connect(func)
@@ -202,7 +226,7 @@ class BoardGameView(QMainWindow):
         if self.__chosenOct is None:
             return
 
-        for row, col in self.__board.whereToGo(self.__chosenOct):
+        for row, col in self.__board.whereToGo(self.__chosenOct).keys():
             qp.fillRect(col * SQUARE_SIZE + X_START,
                         row * SQUARE_SIZE + Y_START,
                         SQUARE_SIZE, SQUARE_SIZE, QBrush(Qt.white))
