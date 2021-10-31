@@ -1,6 +1,6 @@
 from .Oct import *
 from .Enums import *
-
+import json
 
 class BoardGame:
 
@@ -27,6 +27,9 @@ class BoardGame:
         # number of arrows each players have. initial 12 for each
         self.__greenArrows = 12
         self.__redArrows = 12
+
+        # the current state of the board as string (for the AI)
+        self.__currentStateString = ""
 
     """ list of all the oct """
     def __listOfAllOct(self):
@@ -205,18 +208,18 @@ class BoardGame:
 
         return possibleMovesAndEatenOct
 
-    """ move an oct to a specific coordinates
+    """ move an oct to a specific coordinate
         if the move succeed return True, else return False"""
-    def move(self, oct, coordinates):
+    def move(self, oct, coordinate):
         possibleMovesAndEatenOct = self.whereToGo(oct)
         # check if its a legal move for this oct.
-        if coordinates in possibleMovesAndEatenOct.keys():
+        if coordinate in possibleMovesAndEatenOct.keys():
             octObj = self.__octObject(oct)
             # check that the player that trying to move the oct is its owner.
             if octObj.getPlayer() == self.__turn:
-                octObj.setPlace(coordinates)
+                octObj.setPlace(coordinate)
                 self.__changeTurn()     # change the turn
-                return possibleMovesAndEatenOct.get(coordinates)
+                return possibleMovesAndEatenOct.get(coordinate)
         return None
 
     """ according to the place in the board the function return the name of the oct that is there, if its really there,
@@ -291,3 +294,33 @@ class BoardGame:
             print("\n", end=' ')
         print("turn:", self.__turn)
         print('\n')
+
+    """"""""""""""""" FUNCTIONS FOR THE AI """""""""""""""""
+    """"""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+    def setCurrentState(self, str):
+        self.__currentStateString = str
+
+    def getCurrentState(self):
+        return self.__currentStateString
+
+    def stringToBoard(self, str):
+        """ TODO: yotam"""
+
+    def boardToString(self):
+        """TODO: yotam"""
+        jsonBoard = {
+            "Turn": str(self.__turn),
+            "Green Arrows": str(self.__greenArrows),
+            "Red Arrows": str(self.__redArrows),
+
+            "G1 Is Alive": str(self.__green1.isAlive()),
+            "G1 Coordinate": str(self.__green1.getPlace()),
+            "G1 Arrows": str(self.__green1.showAllArrows())
+
+
+        }
+        return jsonBoard
+
+    def getSuccessors(self):
+        """TODO: together"""
