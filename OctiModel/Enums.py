@@ -1,15 +1,15 @@
 import enum
 
 """ Types of arrows """
-class Directions(enum.Enum):
-    Up = 1
-    UpRight = 2
-    Right = 3
-    DownRight = 4
-    Down = 5
-    DownLeft = 6
-    Left = 7
-    UpLeft = 8
+class Directions(str,enum.Enum):
+    Up = "Up"
+    UpRight = "UpRight"
+    Right = "Right"
+    DownRight = "DownRight"
+    Down = "Down"
+    DownLeft = "DownLeft"
+    Left = "Left"
+    UpLeft = "UpLeft"
 
 class Players(enum.Enum):
     Red = 1
