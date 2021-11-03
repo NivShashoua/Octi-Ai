@@ -304,7 +304,7 @@ class BoardGame:
     def getCurrentState(self):
         return self.__currentStateString
 
-    def stringToBoard(self, jsonBoard):
+    def jsonToBoard(self, jsonBoard):
         board = json.loads(jsonBoard)
         print(type(board))
     # loads - take a json, make an object.
@@ -314,43 +314,43 @@ class BoardGame:
     # >>> json.dumps(data)
     # '{"Machine Name": "machineA.host.com"}'
 
-    def boardToString(self):
+    def boardToJson(self):
         jsonBoard = {
             'Turn': self.whoseTurn(),
-            'Green Arrows': str(self.__greenArrows),
-            'Red Arrows': str(self.__redArrows),
+            'Green Arrows': self.__greenArrows,
+            'Red Arrows': self.__redArrows,
 
-            'G1Alive?': str(self.__green1.isAlive()),
-            'G1 Coordinate': str(self.__green1.getPlace()),
-            'G1 Arrows': str(self.__green1.showAllArrows()),
+            'G1Alive?': self.__green1.isAlive(),
+            'G1 Coordinate': self.__green1.getPlace(),
+            'G1 Arrows': self.__green1.showAllArrows(),
 
-            'G2Alive?': str(self.__green2.isAlive()),
-            'G2 Coordinate': str(self.__green2.getPlace()),
-            'G2 Arrows': str(self.__green2.showAllArrows()),
+            'G2Alive?': self.__green2.isAlive(),
+            'G2 Coordinate': self.__green2.getPlace(),
+            'G2 Arrows': self.__green2.showAllArrows(),
 
-            'G3Alive?': str(self.__green3.isAlive()),
-            'G3 Coordinate': str(self.__green3.getPlace()),
-            'G3 Arrows': str(self.__green3.showAllArrows()),
+            'G3Alive?': self.__green3.isAlive(),
+            'G3 Coordinate': self.__green3.getPlace(),
+            'G3 Arrows': self.__green3.showAllArrows(),
 
-            'G4Alive?': str(self.__green4.isAlive()),
-            'G4 Coordinate': str(self.__green4.getPlace()),
-            'G4 Arrows': str(self.__green4.showAllArrows()),
+            'G4Alive?': self.__green4.isAlive(),
+            'G4 Coordinate': self.__green4.getPlace(),
+            'G4 Arrows': self.__green4.showAllArrows(),
 
-            'R1Alive?': str(self.__red1.isAlive()),
-            'R1 Coordinate': str(self.__red1.getPlace()),
-            'R1 Arrows': str(self.__red1.showAllArrows()),
+            'R1Alive?': self.__red1.isAlive(),
+            'R1 Coordinate': self.__red1.getPlace(),
+            'R1 Arrows': self.__red1.showAllArrows(),
 
-            'R2Alive?': str(self.__red2.isAlive()),
-            'R2 Coordinate': str(self.__red2.getPlace()),
-            'R2 Arrows': str(self.__red2.showAllArrows()),
+            'R2Alive?': self.__red2.isAlive(),
+            'R2 Coordinate': self.__red2.getPlace(),
+            'R2 Arrows': self.__red2.showAllArrows(),
 
-            'R3Alive?': str(self.__red3.isAlive()),
-            'R3 Coordinate': str(self.__red3.getPlace()),
-            'R3 Arrows': str(self.__red3.showAllArrows()),
+            'R3Alive?': self.__red3.isAlive(),
+            'R3 Coordinate': self.__red3.getPlace(),
+            'R3 Arrows': self.__red3.showAllArrows(),
 
-            'R4Alive?': str(self.__red4.isAlive()),
-            'R4 Coordinate': str(self.__red4.getPlace()),
-            'R4 Arrows': str(self.__red4.showAllArrows())
+            'R4Alive?': self.__red4.isAlive(),
+            'R4 Coordinate': self.__red4.getPlace(),
+            'R4 Arrows': self.__red4.showAllArrows()
                     }
         return json.dumps(jsonBoard)
 
