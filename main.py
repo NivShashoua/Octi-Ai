@@ -6,6 +6,7 @@ import OctiView.BoardGameView
 import OctiController.BoardGameController
 from OctiModel.Enums import *
 
+
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     board = OctiModel.BoardGame.BoardGame()
