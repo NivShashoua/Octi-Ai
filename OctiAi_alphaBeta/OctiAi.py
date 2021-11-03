@@ -1,5 +1,11 @@
 import json
 import math
+from OctiModel.Enums import *
+from OctiModel.BoardGame import *
+
+""" This AI is working according to the alpha beta algorithm.
+    Remember the AI is the green player!! 
+    The number of states the AI need to search is something like 32^(2*depth) """
 
 class OctiAi:
     """ Constants """
@@ -12,28 +18,53 @@ class OctiAi:
     """ return the state that the AI will choose. The best decision against an optimal enemy,
         with depth = __DEPTH  steps"""
     def alphaBetaSearch(self, state):
-        return self.__maxValue(state, -math.inf, math.inf, self.__DEPTH)
+        return self.__maxValue(state, -math.inf, math.inf, self.__DEPTH)[0]
 
-    """"""
+    """ take care of the maximum states. return a tuple of (state, value) """
     def __maxValue(self, state, alpha, beta, depth):
         self.__AiBoard.stringToBoard(state)     # make the AI Board game update to state
 
         # if the state is terminal state return the evaluation, or if depth equal to zero
         if self.__AiBoard.isGoalState() is not None or depth == 0:
-            return self.__evaluation(state)
+            return state, self.__evaluation(state)
 
-        value = -math.inf
+        stateAndValue = (state, -math.inf)
         for nextState in self.__AiBoard.getSuccessors:
-            value = max(value, self.__minValue(nextState, alpha, beta, depth - 1))
-            if value >= beta:
-                return value
-            alpha = max(alpha, value)
-        return value
+            newValue = max(stateAndValue[1], self.__minValue(nextState, alpha, beta, depth)[1])
+            if newValue != stateAndValue[1]:
+                stateAndValue = (nextState, newValue)
+            # pruning occurred
+            if stateAndValue[1] >= beta:
+                return stateAndValue
+            alpha = max(alpha, stateAndValue[1])    # update alpha
+        return stateAndValue
 
-    """"""
+    """ take care of the minimum states. return a tuple of (state, value) """
     def __minValue(self, state, alpha, beta, depth):
-        """TODO: niv"""
+        self.__AiBoard.stringToBoard(state)     # make the AI Board game update to state
 
-    """"""
-    def __evaluation(self,jsonBoard):
+        # if the state is terminal state return the evaluation, or if depth equal to zero
+        if self.__AiBoard.isGoalState() is not None or depth == 0:
+            return state, self.__evaluation(state)
+
+        stateAndValue = (state, math.inf)
+        for nextState in self.__AiBoard.getSuccessors:
+            newValue = min(stateAndValue[1], self.__maxValue(nextState, alpha, beta, depth - 1)[1])
+            if newValue != stateAndValue[1]:
+                stateAndValue = (nextState, newValue)
+            # pruning occurred
+            if stateAndValue[1] <= alpha:
+                return stateAndValue
+            beta = min(beta, stateAndValue[1])    # update beta
+        return stateAndValue
+
+    """evaluate a number according to the worth of a state.
+       return a double """
+    def __evaluation(self, state):
         """TODO: together"""
+        self.__AiBoard.stringToBoard(state)
+        if self.__AiBoard.isGoalState() == Players.Green:
+            return math.inf     # if the AI win, remember the AI is the green player
+        elif self.__AiBoard.isGoalState() == Players.Red:
+            return -math.inf    # if the AI lose, remember the opponent of the AI is the red player
+
