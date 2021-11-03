@@ -41,6 +41,9 @@ if __name__ == '__main__':
     board.move('R3', (4, 3))
     board.printBoard()
     print(board.whereToGo('G1'))
+    jsonBoard = board.boardToString()
+    print(jsonBoard)
+    board.stringToBoard(jsonBoard)
     sys.exit(app.exec_())
 
 

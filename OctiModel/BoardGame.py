@@ -304,23 +304,55 @@ class BoardGame:
     def getCurrentState(self):
         return self.__currentStateString
 
-    def stringToBoard(self, str):
-        """ TODO: yotam"""
+    def stringToBoard(self, jsonBoard):
+        board = json.loads(jsonBoard)
+        print(type(board))
+    # loads - take a json, make an object.
+    # dumps - take a string, make a json
+    # >>> hostname = "machineA.host.com"
+    # >>> data = {'Machine Name': hostname}
+    # >>> json.dumps(data)
+    # '{"Machine Name": "machineA.host.com"}'
 
     def boardToString(self):
-        """TODO: yotam"""
         jsonBoard = {
-            "Turn": str(self.__turn),
-            "Green Arrows": str(self.__greenArrows),
-            "Red Arrows": str(self.__redArrows),
+            'Turn': self.whoseTurn(),
+            'Green Arrows': str(self.__greenArrows),
+            'Red Arrows': str(self.__redArrows),
 
-            "G1 Is Alive": str(self.__green1.isAlive()),
-            "G1 Coordinate": str(self.__green1.getPlace()),
-            "G1 Arrows": str(self.__green1.showAllArrows())
+            'G1Alive?': str(self.__green1.isAlive()),
+            'G1 Coordinate': str(self.__green1.getPlace()),
+            'G1 Arrows': str(self.__green1.showAllArrows()),
 
+            'G2Alive?': str(self.__green2.isAlive()),
+            'G2 Coordinate': str(self.__green2.getPlace()),
+            'G2 Arrows': str(self.__green2.showAllArrows()),
 
-        }
-        return jsonBoard
+            'G3Alive?': str(self.__green3.isAlive()),
+            'G3 Coordinate': str(self.__green3.getPlace()),
+            'G3 Arrows': str(self.__green3.showAllArrows()),
+
+            'G4Alive?': str(self.__green4.isAlive()),
+            'G4 Coordinate': str(self.__green4.getPlace()),
+            'G4 Arrows': str(self.__green4.showAllArrows()),
+
+            'R1Alive?': str(self.__red1.isAlive()),
+            'R1 Coordinate': str(self.__red1.getPlace()),
+            'R1 Arrows': str(self.__red1.showAllArrows()),
+
+            'R2Alive?': str(self.__red2.isAlive()),
+            'R2 Coordinate': str(self.__red2.getPlace()),
+            'R2 Arrows': str(self.__red2.showAllArrows()),
+
+            'R3Alive?': str(self.__red3.isAlive()),
+            'R3 Coordinate': str(self.__red3.getPlace()),
+            'R3 Arrows': str(self.__red3.showAllArrows()),
+
+            'R4Alive?': str(self.__red4.isAlive()),
+            'R4 Coordinate': str(self.__red4.getPlace()),
+            'R4 Arrows': str(self.__red4.showAllArrows())
+                    }
+        return json.dumps(jsonBoard)
 
     def getSuccessors(self):
         """TODO: together"""
