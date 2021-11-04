@@ -9,7 +9,7 @@ from OctiModel.BoardGame import *
 
 class OctiAi:
     """ Constants """
-    __DEPTH = 4   # how many layers the alpha beta algorithm will search
+    __DEPTH = 3   # how many layers the alpha beta algorithm will search
 
     """ Constructor """
     def __init__(self, board):
@@ -29,7 +29,7 @@ class OctiAi:
             return state, self.__evaluation(state)
 
         stateAndValue = (state, -math.inf)
-        for nextState in self.__AiBoard.getSuccessors:
+        for nextState in self.__AiBoard.getSuccessors():
             newValue = max(stateAndValue[1], self.__minValue(nextState, alpha, beta, depth)[1])
             if newValue != stateAndValue[1]:
                 stateAndValue = (nextState, newValue)
@@ -48,7 +48,7 @@ class OctiAi:
             return state, self.__evaluation(state)
 
         stateAndValue = (state, math.inf)
-        for nextState in self.__AiBoard.getSuccessors:
+        for nextState in self.__AiBoard.getSuccessors():
             newValue = min(stateAndValue[1], self.__maxValue(nextState, alpha, beta, depth - 1)[1])
             if newValue != stateAndValue[1]:
                 stateAndValue = (nextState, newValue)
@@ -68,3 +68,13 @@ class OctiAi:
         elif self.__AiBoard.isGoalState() == Players.Red:
             return -math.inf    # if the AI lose, remember the opponent of the AI is the red player
 
+        evaluation = 0  # the number that represent the evaluation
+
+        allGreenOct = self.__AiBoard.listOfAllPlayerAliveOct(Players.Green)
+        allRedOct = self.__AiBoard.listOfAllPlayerAliveOct(Players.Red)
+
+        # green oct (the AI's octs) life worth 120, and red oct(opponent's octs) worth -100
+        evaluation = len(allGreenOct) * 120 + len(allRedOct) * -100
+
+
+        return evaluation
