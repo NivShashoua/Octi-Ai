@@ -354,5 +354,23 @@ class BoardGame:
                     }
         return json.dumps(jsonBoard)
 
+    """ return a list of all the successors of this specific state (return them as json). """
     def getSuccessors(self):
         """TODO: together"""
+
+    """ return a list of names of all the alive oct of a specific player. """
+    def listOfAllPlayerAliveOct(self, player):
+        playerAliveOct = []
+        for oct in self.__listOfAllOctAlive():
+            if oct.getPlayer() == player:
+                playerAliveOct.append(oct.getName())
+        return playerAliveOct
+
+    """ return a list of all the arrows of a given oct.
+        the parameter is the oct's name. """
+    def allArrows(self, oct):
+        return self.__octObject(oct).showAllArrows()
+
+    """ return the number of steps of the shortest path from the given oct to the gaol. """
+    def manhattanStepsToGoal(self, oct):
+        """ TODO: niv """
