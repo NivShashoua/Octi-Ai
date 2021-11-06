@@ -44,20 +44,17 @@ class BoardGame:
             if oct.isAlive():
                 allAliveOct.append(oct)
         return allAliveOct
-
     """ convert oct name to oct object """
     def __octObject(self, oct):
         for octObj in self.__listOfAllOct():
             if octObj.getName() == oct:
                 return octObj
-
     """ Change the turn of the player """
     def __changeTurn(self):
         if self.__turn == Players.Green:
             self.__turn = Players.Red
         else:
             self.__turn = Players.Green
-
     """ return True if the player still have some arrows left, else return False """
     def __playerArrowsNotEmpty(self):
         if self.__turn == Players.Green:
@@ -67,7 +64,6 @@ class BoardGame:
             if self.__redArrows > 0:
                 return True
         return False
-
     """ Insert an arrow in your turn 
         :return True if the insert succeeded, and false if there is an arrow already inside"""
     def insertArrow(self, oct, arrow):
@@ -86,12 +82,10 @@ class BoardGame:
 
         self.__changeTurn()     # change the turn
         return True
-
     """ given an oct name the function return a list of all the arrows it have """
     def showAllArrows(self, oct):
         octObj = self.__octObject(oct)
         return octObj.showAllArrows()
-
     """ for all the octs that are alive return this tuple: (name, color, coordinates) """
     def getAllAliveOctInfo(self):
         listOfAllOctPlaces = []
@@ -99,7 +93,6 @@ class BoardGame:
             listOfAllOctPlaces.append((oct.getName(), oct.getPlayer(), oct.getPlace()))
 
         return listOfAllOctPlaces
-
     """ get the coordinates near the wanted location, according to the direction. 
         if the new location is out of bound then return (-1, -1) """
     def __getCoordinate(self, location, direction):
@@ -151,7 +144,6 @@ class BoardGame:
 
         newLocation = (row, col)
         return newLocation
-
     """ check the location is not occupied by other alive oct. 
         if the place is occupied return the name of the oct that is there, if not return None. """
     def __isOccupied(self, location):
@@ -159,7 +151,6 @@ class BoardGame:
             if oct.getPlace() == location:
                 return oct.getName()
         return None
-
     """ update the 'possibleJumpsAndEatenOct' list with all the locations the oct can move after
         the jump( can be multiple jump), and the list of all the octs it can eat """
     def __handelJump(self, location, arrows, possibleJumpsAndEatenOct, eatenOcts):
@@ -175,7 +166,6 @@ class BoardGame:
                     newEatenOct = eatenOcts + [self.__isOccupied(newLocation)]
                     newJumpLocation = self.__getCoordinate(newLocation, direction)
                     self.__handelJump(newJumpLocation, arrows, possibleJumpsAndEatenOct, newEatenOct)
-
     """ What are all the possible movement for an oct, and the possible eaten octs.
         parameter - String of the oct name. return - dictionary of the possible moves, and the octs it eat """
     def whereToGo(self, oct):
@@ -207,7 +197,6 @@ class BoardGame:
                     self.__handelJump(jumpLocation, arrows, possibleMovesAndEatenOct, eatenOcts)
 
         return possibleMovesAndEatenOct
-
     """ move an oct to a specific coordinate
         if the move succeed return True, else return False"""
     def move(self, oct, coordinate):
@@ -230,7 +219,6 @@ class BoardGame:
                 return oct.getName()
 
         return None
-
     """ :return the player who one (Players.green or Players.red). if no one one return None """
     def isGoalState(self):
 
@@ -260,25 +248,21 @@ class BoardGame:
             return Players.Green
 
         return None     # no one won
-
     """ kill/eat this oct """
     def kill(self, oct):
         self.__octObject(oct).death()
-
     """ return how many arrows left for the player given by the parameter """
     def arrowsLeft(self, player):
         if player == Players.Green:
             return str(self.__greenArrows)
         elif player == Players.Red:
             return str(self.__redArrows)
-
     """ return the player that need to play now """
     def whoseTurn(self):
         if self.__turn == Players.Green:
             return "Green"
         else:
             return "Red"
-
     """ print the current state of the board """
     def printBoard(self):
         print('', end=' ')
@@ -294,7 +278,6 @@ class BoardGame:
             print("\n", end=' ')
         print("turn:", self.__turn)
         print('\n')
-
     """"""""""""""""" FUNCTIONS FOR THE AI """""""""""""""""
     """"""""""""""""""""""""""""""""""""""""""""""""""""""""
 
@@ -306,13 +289,28 @@ class BoardGame:
 
     def jsonToBoard(self, jsonBoard):
         board = json.loads(jsonBoard)
-        print(type(board))
-    # loads - take a json, make an object.
-    # dumps - take a string, make a json
-    # >>> hostname = "machineA.host.com"
-    # >>> data = {'Machine Name': hostname}
-    # >>> json.dumps(data)
-    # '{"Machine Name": "machineA.host.com"}'
+        self.__turn = board["Turn"]
+        self.__green1.setPlace(board['G1 Coordinate'])
+        self.__green1.setAlive(board['G1 Alive?'])
+        self.__green2.setPlace(board['G2 Coordinate'])
+        self.__green2.setAlive(board['G2 Alive?'])
+        self.__green3.setPlace(board['G3 Coordinate'])
+        self.__green3.setAlive(board['G3 Alive?'])
+        self.__green4.setPlace(board['G4 Coordinate'])
+        self.__green4.setAlive(board['G4 Alive?'])
+        self.__red1.setPlace(board['R1 Coordinate'])
+        self.__red1.setAlive(board['R1 Alive?'])
+        self.__red2.setPlace(board['R2 Coordinate'])
+        self.__red2.setAlive(board['R2 Alive?'])
+        self.__red3.setPlace(board['R3 Coordinate'])
+        self.__red3.setAlive(board['R3 Alive?'])
+        self.__red4.setPlace(board['R4 Coordinate'])
+        self.__red4.setAlive(board['R4 Alive?'])
+        self.__greenArrows = board['Green Arrows']
+        self.__redArrows = board['Red Arrows']
+
+# loads - take a json, make an object.
+# dumps - take a string, make a json.
 
     def boardToJson(self):
         jsonBoard = {
@@ -320,35 +318,35 @@ class BoardGame:
             'Green Arrows': self.__greenArrows,
             'Red Arrows': self.__redArrows,
 
-            'G1Alive?': self.__green1.isAlive(),
+            'G1 Alive?': self.__green1.isAlive(),
             'G1 Coordinate': self.__green1.getPlace(),
             'G1 Arrows': self.__green1.showAllArrows(),
 
-            'G2Alive?': self.__green2.isAlive(),
+            'G2 Alive?': self.__green2.isAlive(),
             'G2 Coordinate': self.__green2.getPlace(),
             'G2 Arrows': self.__green2.showAllArrows(),
 
-            'G3Alive?': self.__green3.isAlive(),
+            'G3 Alive?': self.__green3.isAlive(),
             'G3 Coordinate': self.__green3.getPlace(),
             'G3 Arrows': self.__green3.showAllArrows(),
 
-            'G4Alive?': self.__green4.isAlive(),
+            'G4 Alive?': self.__green4.isAlive(),
             'G4 Coordinate': self.__green4.getPlace(),
             'G4 Arrows': self.__green4.showAllArrows(),
 
-            'R1Alive?': self.__red1.isAlive(),
+            'R1 Alive?': self.__red1.isAlive(),
             'R1 Coordinate': self.__red1.getPlace(),
             'R1 Arrows': self.__red1.showAllArrows(),
 
-            'R2Alive?': self.__red2.isAlive(),
+            'R2 Alive?': self.__red2.isAlive(),
             'R2 Coordinate': self.__red2.getPlace(),
             'R2 Arrows': self.__red2.showAllArrows(),
 
-            'R3Alive?': self.__red3.isAlive(),
+            'R3 Alive?': self.__red3.isAlive(),
             'R3 Coordinate': self.__red3.getPlace(),
             'R3 Arrows': self.__red3.showAllArrows(),
 
-            'R4Alive?': self.__red4.isAlive(),
+            'R4 Alive?': self.__red4.isAlive(),
             'R4 Coordinate': self.__red4.getPlace(),
             'R4 Arrows': self.__red4.showAllArrows()
                     }

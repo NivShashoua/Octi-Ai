@@ -119,6 +119,9 @@ class Oct:
     def death(self):
         self.__isAlive = False
 
+    def setAlive(self, life):
+        self.__isAlive = life
+
     """ return the coordinates of the oct """
     def getPlace(self):
         return self.__place

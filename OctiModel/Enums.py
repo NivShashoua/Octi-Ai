@@ -11,6 +11,6 @@ class Directions(str,enum.Enum):
     Left = "Left"
     UpLeft = "UpLeft"
 
-class Players(enum.Enum):
-    Red = 1
-    Green = 2
+class Players(str, enum.Enum):
+    Red = "Red"
+    Green = "Green"

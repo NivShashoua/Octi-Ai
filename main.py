@@ -46,6 +46,11 @@ if __name__ == '__main__':
     jsonBoard = board.boardToJson()
     print(jsonBoard)
     board.jsonToBoard(jsonBoard)
+
+    board.move('G2', (3, 0))
+    jsonBoard = board.boardToJson()
+    print(jsonBoard)
+    board.jsonToBoard(jsonBoard)
     sys.exit(app.exec_())
 
 
