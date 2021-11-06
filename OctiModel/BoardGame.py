@@ -354,5 +354,33 @@ class BoardGame:
                     }
         return json.dumps(jsonBoard)
 
+    """ return a list of all the successors of this specific state (return them as json).
+        It's important to add the states of the movement first, because of the alpha beta algorithm. """
     def getSuccessors(self):
         """TODO: together"""
+
+    """ return a list of names of all the alive oct of a specific player. """
+    def listOfAllPlayerAliveOct(self, player):
+        playerAliveOct = []
+        for oct in self.__listOfAllOctAlive():
+            if oct.getPlayer() == player:
+                playerAliveOct.append(oct.getName())
+        return playerAliveOct
+
+    """ return a list of all the arrows of a given oct.
+        the parameter is the oct's name. """
+    def allArrows(self, oct):
+        return self.__octObject(oct).showAllArrows()
+
+    """ return the number of steps of the shortest path from the given oct to the gaol. this function don't consider
+        the arrows inside the oct or the other octs in the board."""
+    def numberOfStepsToGoal(self, oct):
+        greenRowGoal = 5    # the row the green player need to be in order to win (the start point of the red).
+        redRowGoal = 1      # the row the red player need to be in order to win (the start point of the green).
+
+        octObj = self.__octObject(oct)
+
+        if octObj.getPlayer() == Players.Green:
+            return abs(octObj.getPlace()[0] - greenRowGoal)
+        else:
+            return abs(octObj.getPlace()[0] - redRowGoal)
