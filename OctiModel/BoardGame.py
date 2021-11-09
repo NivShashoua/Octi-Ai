@@ -309,6 +309,39 @@ class BoardGame:
         self.__greenArrows = board['Green Arrows']
         self.__redArrows = board['Red Arrows']
 
+#         insert arrows
+        arrows = board['G1 Arrows']
+        for arrow in arrows:
+            self.__green1.insertArrow(Directions[arrow])
+        arrows = board['G2 Arrows']
+        for arrow in arrows:
+            print(arrow)
+            self.__green2.insertArrow(Directions[arrow])
+        arrows = board['G3 Arrows']
+        for arrow in arrows:
+            print(arrow)
+            self.__green3.insertArrow(Directions[arrow])
+        arrows = board['G4 Arrows']
+        for arrow in arrows:
+            print(arrow)
+            self.__green4.insertArrow(Directions[arrow])
+        arrows = board['R1 Arrows']
+        for arrow in arrows:
+            print(arrow)
+            self.__red1.insertArrow(Directions[arrow])
+        arrows = board['R2 Arrows']
+        for arrow in arrows:
+            print(arrow)
+            self.__red2.insertArrow(Directions[arrow])
+        arrows = board['R3 Arrows']
+        for arrow in arrows:
+            print(arrow)
+            self.__red3.insertArrow(Directions[arrow])
+        arrows = board['R4 Arrows']
+        for arrow in arrows:
+            print(arrow)
+            self.__red4.insertArrow(Directions[arrow])
+
 # loads - take a json, make an object.
 # dumps - take a string, make a json.
 
