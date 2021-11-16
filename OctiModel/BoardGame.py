@@ -58,12 +58,14 @@ class BoardGame:
         for octObj in self.__listOfAllOct():
             if octObj.getName() == oct:
                 return octObj
+
     """ Change the turn of the player """
     def __changeTurn(self):
         if self.__turn == Players.Green:
             self.__turn = Players.Red
         else:
             self.__turn = Players.Green
+
     """ return True if the player still have some arrows left, else return False """
     def __playerArrowsNotEmpty(self):
         if self.__turn == Players.Green:
@@ -73,6 +75,7 @@ class BoardGame:
             if self.__redArrows > 0:
                 return True
         return False
+
     """ Insert an arrow in your turn 
         :return True if the insert succeeded, and false if there is an arrow already inside"""
     def insertArrow(self, oct, arrow):
@@ -91,17 +94,19 @@ class BoardGame:
 
         self.__changeTurn()     # change the turn
         return True
+
     """ given an oct name the function return a list of all the arrows it have """
     def showAllArrows(self, oct):
         octObj = self.__octObject(oct)
         return octObj.showAllArrows()
+
     """ for all the octs that are alive return this tuple: (name, color, coordinates) """
     def getAllAliveOctInfo(self):
         listOfAllOctPlaces = []
         for oct in self.__listOfAllOctAlive():
             listOfAllOctPlaces.append((oct.getName(), oct.getPlayer(), oct.getPlace()))
-
         return listOfAllOctPlaces
+
     """ get the coordinates near the wanted location, according to the direction. 
         if the new location is out of bound then return (-1, -1) """
     def __getCoordinate(self, location, direction):
@@ -153,6 +158,7 @@ class BoardGame:
 
         newLocation = (row, col)
         return newLocation
+
     """ check the location is not occupied by other alive oct. 
         if the place is occupied return the name of the oct that is there, if not return None. """
     def __isOccupied(self, location):
@@ -160,6 +166,7 @@ class BoardGame:
             if oct.getPlace() == location:
                 return oct.getName()
         return None
+
     """ update the 'possibleJumpsAndEatenOct' list with all the locations the oct can move after
         the jump( can be multiple jump), and the list of all the octs it can eat """
     def __handelJump(self, location, arrows, possibleJumpsAndEatenOct, eatenOcts):
@@ -175,6 +182,7 @@ class BoardGame:
                     newEatenOct = eatenOcts + [self.__isOccupied(newLocation)]
                     newJumpLocation = self.__getCoordinate(newLocation, direction)
                     self.__handelJump(newJumpLocation, arrows, possibleJumpsAndEatenOct, newEatenOct)
+
     """ What are all the possible movement for an oct, and the possible eaten octs.
         parameter - String of the oct name. return - dictionary of the possible moves, and the octs it eat """
     def whereToGo(self, oct):
@@ -206,6 +214,7 @@ class BoardGame:
                     self.__handelJump(jumpLocation, arrows, possibleMovesAndEatenOct, eatenOcts)
 
         return possibleMovesAndEatenOct
+
     """ move an oct to a specific coordinate
         if the move succeed return True, else return False"""
     def move(self, oct, coordinate):
@@ -228,6 +237,7 @@ class BoardGame:
                 return oct.getName()
 
         return None
+
     """ :return the player who one (Players.green or Players.red). if no one one return None """
     def isGoalState(self):
 
@@ -257,21 +267,25 @@ class BoardGame:
             return Players.Green
 
         return None     # no one won
+
     """ kill/eat this oct """
     def kill(self, oct):
         self.__octObject(oct).death()
+
     """ return how many arrows left for the player given by the parameter """
     def arrowsLeft(self, player):
         if player == Players.Green:
             return str(self.__greenArrows)
         elif player == Players.Red:
             return str(self.__redArrows)
+
     """ return the player that need to play now """
     def whoseTurn(self):
         if self.__turn == Players.Green:
             return "Green"
         else:
             return "Red"
+
     """ print the current state of the board """
     def printBoard(self):
         print('', end=' ')
@@ -287,6 +301,7 @@ class BoardGame:
             print("\n", end=' ')
         print("turn:", self.__turn)
         print('\n')
+        
     """"""""""""""""" FUNCTIONS FOR THE AI """""""""""""""""
     """"""""""""""""""""""""""""""""""""""""""""""""""""""""
 
