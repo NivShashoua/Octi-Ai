@@ -41,15 +41,16 @@ if __name__ == '__main__':
     #time.sleep(1)
     board.move('R3', (4, 3))
     board.printBoard()
-    print(board.whereToGo('G1'))
+    # print(board.whereToGo('G1'))
 
     jsonBoard = board.boardToJson()
-    print(jsonBoard)
+    # print(jsonBoard)
     board.jsonToBoard(jsonBoard)
 
     board.move('G2', (3, 0))
     jsonBoard = board.boardToJson()
-    print(jsonBoard)
+    board.getSuccessors()
+    # print(jsonBoard)
     board.jsonToBoard(jsonBoard)
     sys.exit(app.exec_())
 

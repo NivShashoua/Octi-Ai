@@ -44,6 +44,15 @@ class BoardGame:
             if oct.isAlive():
                 allAliveOct.append(oct)
         return allAliveOct
+
+    """ list of all octs of a specific color """
+    def __listofOctAliveByPlayer(self, player):
+        colors = []
+        for oct in self.__listOfAllOctAlive():
+            if oct.getPlayer == player:
+                colors.append(oct)
+        return colors
+
     """ convert oct name to oct object """
     def __octObject(self, oct):
         for octObj in self.__listOfAllOct():
@@ -315,31 +324,24 @@ class BoardGame:
             self.__green1.insertArrow(Directions[arrow])
         arrows = board['G2 Arrows']
         for arrow in arrows:
-            print(arrow)
             self.__green2.insertArrow(Directions[arrow])
         arrows = board['G3 Arrows']
         for arrow in arrows:
-            print(arrow)
             self.__green3.insertArrow(Directions[arrow])
         arrows = board['G4 Arrows']
         for arrow in arrows:
-            print(arrow)
             self.__green4.insertArrow(Directions[arrow])
         arrows = board['R1 Arrows']
         for arrow in arrows:
-            print(arrow)
             self.__red1.insertArrow(Directions[arrow])
         arrows = board['R2 Arrows']
         for arrow in arrows:
-            print(arrow)
             self.__red2.insertArrow(Directions[arrow])
         arrows = board['R3 Arrows']
         for arrow in arrows:
-            print(arrow)
             self.__red3.insertArrow(Directions[arrow])
         arrows = board['R4 Arrows']
         for arrow in arrows:
-            print(arrow)
             self.__red4.insertArrow(Directions[arrow])
 
 # loads - take a json, make an object.
@@ -389,6 +391,17 @@ class BoardGame:
         It's important to add the states of the movement first, because of the alpha beta algorithm. """
     def getSuccessors(self):
         """TODO: together"""
+        successors = []
+        currState = self
+        for oct in self.__listofOctAliveByPlayer(self.__turn):
+            for location, eaten in self.whereToGo(oct):
+                self.move(oct, location)
+                for eatenOct in eaten:
+                    if eatenOct.getPlayer() != oct.getPlayer():
+                        self.kill(eatenOct)
+                successors.append(self.boardToJson(self))
+                self = currState
+        print(successors)
 
     """ return a list of names of all the alive oct of a specific player. """
     def listOfAllPlayerAliveOct(self, player):
