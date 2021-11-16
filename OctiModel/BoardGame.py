@@ -49,7 +49,7 @@ class BoardGame:
     def __listofOctAliveByPlayer(self, player):
         colors = []
         for oct in self.__listOfAllOctAlive():
-            if oct.getPlayer == player:
+            if oct.getPlayer() == player:
                 colors.append(oct)
         return colors
 
@@ -392,15 +392,15 @@ class BoardGame:
     def getSuccessors(self):
         """TODO: together"""
         successors = []
-        currState = self
+        currState = self.boardToJson()
         for oct in self.__listofOctAliveByPlayer(self.__turn):
-            for location, eaten in self.whereToGo(oct):
-                self.move(oct, location)
+            for location, eaten in self.whereToGo(oct.getName()).items():
+                self.move(oct.getName(), location)
                 for eatenOct in eaten:
                     if eatenOct.getPlayer() != oct.getPlayer():
                         self.kill(eatenOct)
-                successors.append(self.boardToJson(self))
-                self = currState
+                successors.append(self.boardToJson())
+                self.jsonToBoard(currState)
         print(successors)
 
     """ return a list of names of all the alive oct of a specific player. """
