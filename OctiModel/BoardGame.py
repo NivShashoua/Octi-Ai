@@ -301,7 +301,7 @@ class BoardGame:
             print("\n", end=' ')
         print("turn:", self.__turn)
         print('\n')
-        
+
     """"""""""""""""" FUNCTIONS FOR THE AI """""""""""""""""
     """"""""""""""""""""""""""""""""""""""""""""""""""""""""
 
@@ -314,50 +314,81 @@ class BoardGame:
     def jsonToBoard(self, jsonBoard):
         board = json.loads(jsonBoard)
         self.__turn = board["Turn"]
-        self.__green1.setPlace(board['G1 Coordinate'])
+        self.__green1.setPlace(tuple(board['G1 Coordinate']))
         self.__green1.setAlive(board['G1 Alive?'])
-        self.__green2.setPlace(board['G2 Coordinate'])
+        self.__green2.setPlace(tuple(board['G2 Coordinate']))
         self.__green2.setAlive(board['G2 Alive?'])
-        self.__green3.setPlace(board['G3 Coordinate'])
+        self.__green3.setPlace(tuple(board['G3 Coordinate']))
         self.__green3.setAlive(board['G3 Alive?'])
-        self.__green4.setPlace(board['G4 Coordinate'])
+        self.__green4.setPlace(tuple(board['G4 Coordinate']))
         self.__green4.setAlive(board['G4 Alive?'])
-        self.__red1.setPlace(board['R1 Coordinate'])
+        self.__red1.setPlace(tuple(board['R1 Coordinate']))
         self.__red1.setAlive(board['R1 Alive?'])
-        self.__red2.setPlace(board['R2 Coordinate'])
+        self.__red2.setPlace(tuple(board['R2 Coordinate']))
         self.__red2.setAlive(board['R2 Alive?'])
-        self.__red3.setPlace(board['R3 Coordinate'])
+        self.__red3.setPlace(tuple(board['R3 Coordinate']))
         self.__red3.setAlive(board['R3 Alive?'])
-        self.__red4.setPlace(board['R4 Coordinate'])
+        self.__red4.setPlace(tuple(board['R4 Coordinate']))
         self.__red4.setAlive(board['R4 Alive?'])
         self.__greenArrows = board['Green Arrows']
         self.__redArrows = board['Red Arrows']
 
-#         insert arrows
+        # insert arrows
         arrows = board['G1 Arrows']
-        for arrow in arrows:
-            self.__green1.insertArrow(Directions[arrow])
+        for arrow in Directions:
+            if arrow not in arrows:
+                self.__green1.removeArrow(arrow)
+            else:
+                self.__green1.insertArrow(arrow)
+
         arrows = board['G2 Arrows']
-        for arrow in arrows:
-            self.__green2.insertArrow(Directions[arrow])
+        for arrow in Directions:
+            if arrow not in arrows:
+                self.__green2.removeArrow(arrow)
+            else:
+                self.__green2.insertArrow(arrow)
+
         arrows = board['G3 Arrows']
-        for arrow in arrows:
-            self.__green3.insertArrow(Directions[arrow])
+        for arrow in Directions:
+            if arrow not in arrows:
+                self.__green3.removeArrow(arrow)
+            else:
+                self.__green3.insertArrow(arrow)
+
         arrows = board['G4 Arrows']
-        for arrow in arrows:
-            self.__green4.insertArrow(Directions[arrow])
+        for arrow in Directions:
+            if arrow not in arrows:
+                self.__green4.removeArrow(arrow)
+            else:
+                self.__green4.insertArrow(arrow)
+
         arrows = board['R1 Arrows']
-        for arrow in arrows:
-            self.__red1.insertArrow(Directions[arrow])
+        for arrow in Directions:
+            if arrow not in arrows:
+                self.__red1.removeArrow(arrow)
+            else:
+                self.__red1.insertArrow(arrow)
+
         arrows = board['R2 Arrows']
-        for arrow in arrows:
-            self.__red2.insertArrow(Directions[arrow])
+        for arrow in Directions:
+            if arrow not in arrows:
+                self.__red2.removeArrow(arrow)
+            else:
+                self.__red2.insertArrow(arrow)
+
         arrows = board['R3 Arrows']
-        for arrow in arrows:
-            self.__red3.insertArrow(Directions[arrow])
+        for arrow in Directions:
+            if arrow not in arrows:
+                self.__red3.removeArrow(arrow)
+            else:
+                self.__red3.insertArrow(arrow)
+
         arrows = board['R4 Arrows']
-        for arrow in arrows:
-            self.__red4.insertArrow(Directions[arrow])
+        for arrow in Directions:
+            if arrow not in arrows:
+                self.__red4.removeArrow(arrow)
+            else:
+                self.__red4.insertArrow(arrow)
 
 # loads - take a json, make an object.
 # dumps - take a string, make a json.
@@ -409,17 +440,24 @@ class BoardGame:
         successors = []
         currState = self.boardToJson()
         for oct in self.__listofOctAliveByPlayer(self.__turn):
+            # all the movement
             for location, eaten in self.whereToGo(oct.getName()).items():
                 self.move(oct.getName(), location)
+                # eat all the enemy octs
                 for eatenOct in eaten:
                     if eatenOct.getPlayer() != oct.getPlayer():
                         self.kill(eatenOct)
                 successors.append(self.boardToJson())
                 self.jsonToBoard(currState)
-        print(successors)
+
+            # all the arrows inserts
+            for arrow in Directions:
+                if self.insertArrow(oct.getName(), arrow):
+                    successors.append(self.boardToJson())
+                    self.jsonToBoard(currState)
 
     """ return a list of names of all the alive oct of a specific player. """
-    def listOfAllPlayerAliveOct(self, player):
+    def namesOfAllPlayerAliveOct(self, player):
         playerAliveOct = []
         for oct in self.__listOfAllOctAlive():
             if oct.getPlayer() == player:
