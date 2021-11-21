@@ -1,0 +1,17 @@
+רעיונות:
+BIAS = 32
+
+green oct alive = 120
+red oct alive = 100
+
+arrow down = 5
+arrows downLeft, downRight = 4
+arrows left, right = 3
+aroows up, upLeft, upRight = 2
+
+f(arrows, stepsToGoal, numberOfOctsThatHaveArrows) = 
+ ככל שאוקטי יותר קרוב לשורות כך מספר החצים יותר שווה.
+ ככל שמספר האוקטים שיש עליהם חצים ויתר גדול, מקבלים ציון
+ ישנו מספר אופטימלי(3 או 2) של חצים לאוקטי יחיד
+ ישו מספר אופטימלי של מספר חצים משומשים - 12 פחות נוטרים
+ 
