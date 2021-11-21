@@ -2,6 +2,7 @@ import json
 import math
 from OctiModel.Enums import *
 from OctiModel.BoardGame import *
+import random
 
 """ This AI is working according to the alpha beta algorithm.
     Remember the AI is the green player!! 
@@ -9,7 +10,8 @@ from OctiModel.BoardGame import *
 
 class OctiAi:
     """ Constants """
-    __DEPTH = 3   # how many layers the alpha beta algorithm will search
+    __DEPTH = 3     # how many layers the alpha beta algorithm will search
+    __BIAS = 32
 
     """ Constructor """
     def __init__(self, board):
@@ -70,11 +72,13 @@ class OctiAi:
 
         evaluation = 0  # the number that represent the evaluation
 
-        allGreenOct = self.__AiBoard.listOfAllPlayerAliveOct(Players.Green)
-        allRedOct = self.__AiBoard.listOfAllPlayerAliveOct(Players.Red)
+        allGreenOct = self.__AiBoard.namesOfAllPlayerAliveOct(Players.Green)
+        allRedOct = self.__AiBoard.namesOfAllPlayerAliveOct(Players.Red)
 
         # green oct (the AI's octs) life worth 120, and red oct(opponent's octs) worth -100
-        evaluation = len(allGreenOct) * 120 + len(allRedOct) * -100
+        evaluation = len(allGreenOct) * (120 + self.__BIAS) + len(allRedOct) * (-100 + self.__BIAS)
 
+        # use random to choose the preferred state among equal states.
+        evaluation = evaluation + random.randrange(self.__BIAS)
 
         return evaluation
