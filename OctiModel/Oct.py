@@ -134,7 +134,25 @@ class Oct:
     def getPlayer(self):
         return self.__player
 
-    """ change the oct location """
+    """ change the oct coordinates. newPlace need to be tuple """
     def setPlace(self, newPlace):
         self.__place = newPlace
 
+
+    def removeArrow(self, arrow):
+        if arrow == Directions.Up:
+            self.__arrowUp = False
+        elif arrow == Directions.UpRight:
+            self.__arrowUpRight = False
+        elif arrow == Directions.Right:
+            self.__arrowRight = False
+        elif arrow == Directions.DownRight:
+            self.__arrowDownRight = False
+        elif arrow == Directions.Down:
+            self.__arrowDown = False
+        elif arrow == Directions.DownLeft:
+            self.__arrowDownLeft = False
+        elif arrow == Directions.Left:
+            self.__arrowLeft = False
+        elif arrow == Directions.UpLeft:
+            self.__arrowUpLeft = False
