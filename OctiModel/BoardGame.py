@@ -12,7 +12,7 @@ class BoardGame:
     """Constructor"""
     def __init__(self):
         # which player turn
-        self.__turn = Players.Green
+        self.__turn = Players.Red
 
         # all the oct on the game
         self.__green1 = Oct(Players.Green, "G1", 1, 1)
@@ -215,8 +215,8 @@ class BoardGame:
 
         return possibleMovesAndEatenOct
 
-    """ move an oct to a specific coordinate
-        if the move succeed return True, else return False"""
+    """ move an oct to a specific coordinate,
+        if the move succeed return a list of all the octs he can eat, else return None """
     def move(self, oct, coordinate):
         possibleMovesAndEatenOct = self.whereToGo(oct)
         # check if its a legal move for this oct.
@@ -445,7 +445,7 @@ class BoardGame:
                 self.move(oct.getName(), location)
                 # eat all the enemy octs
                 for eatenOct in eaten:
-                    if eatenOct.getPlayer() != oct.getPlayer():
+                    if self.__octObject(eatenOct).getPlayer() != oct.getPlayer():
                         self.kill(eatenOct)
                 successors.append(self.boardToJson())
                 self.jsonToBoard(currState)
@@ -455,6 +455,8 @@ class BoardGame:
                 if self.insertArrow(oct.getName(), arrow):
                     successors.append(self.boardToJson())
                     self.jsonToBoard(currState)
+
+        return successors
 
     """ return a list of names of all the alive oct of a specific player. """
     def namesOfAllPlayerAliveOct(self, player):
