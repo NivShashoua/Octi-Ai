@@ -10,7 +10,7 @@ from OctiView.ConstantView import *
 class BoardGameController():
 
     """ Constuctor """
-    def __init__(self, model, view):
+    def __init__(self, model, view, AI):
         #app = QApplication(sys.argv)
 
         self.__board = model
@@ -29,13 +29,20 @@ class BoardGameController():
         # (connect between the mouse press and this function)
         self.__view.connectFunctionToMousePress(self.mousePressAction)
 
+        ##################
+        # AI Parameters: #
+        ##################
+        self.__platAgainstAI = False
+        self.__AI = AI
+
+
         #sys.exit(app.exec_())
 
     """" pop the windows to insert an arrow, when cilcked the insert an arrow button """
     def insertArrow(self):
         self.__chosenOctInsertArrow = self.__view.getChosenOct()    # the name of the chosen oct
         if self.__chosenOctInsertArrow is None:
-            self.__view.showMassage("you have to clicked on the oct you want to insert arrows first.")
+            self.__view.showMassage("you have to click on the oct you want to insert arrows first.")
         else:
             self.__view.showInsertArrowWindow()
 
@@ -73,6 +80,11 @@ class BoardGameController():
         if succeeded:
             self.__view.closeInsertArrowWindow()    # close the insert arrow window
             self.__view.repaint()
+
+            # if the AI is on and its his turn (he is always the green player).
+            if self.__platAgainstAI and self.__board.whoseTurn() == Players.Green:
+                self.__handleAI()
+
         else:
             self.__view.showMassage("this arrow already inside this oct")
 
@@ -88,7 +100,7 @@ class BoardGameController():
 
         coordinates = (matrixRow, matrixCol)
 
-        # if the user clicked on an oct he can move it if he clicked on a possible move
+        # if the user already clicked on an oct he can move it (only to legal movement area)
         if self.__view.getChosenOct() is not None:
             possibleEatenOcts = self.__board.move(self.__view.getChosenOct(), coordinates)
             if possibleEatenOcts is not None:
@@ -106,11 +118,16 @@ class BoardGameController():
                     self.__view.showMassage("The Red Player Won!!!")
                 return
 
-        # paint in white all the possible moves for the chosen oct
+        # get the name of the oct that the user clicked on, if he clicked on it
         octName = self.__board.getOctNameFromCordinates(coordinates)
+        # remember the name of the oct that had been click on( or None if the user didn't click in an oct)
         self.__view.clickedOct(octName)
+        # paint in white all the possible moves for the chosen oct
         self.__view.repaint()
 
+        # if the AI is on and its his turn (he is always the green player).
+        if self.__platAgainstAI and self.__board.whoseTurn() == Players.Green:
+            self.__handleAI()
 
     """ pop a question box that ask the user if he want to eat a certain oct """
     def __handleQuestionBox(self, allEatenOct):
@@ -118,3 +135,15 @@ class BoardGameController():
             buttonReply = self.__view.showQuestionBox("Do you want to eat the oct: " + oct + " ?")
             if buttonReply == QMessageBox.Yes:
                 self.__board.kill(oct)
+
+    """ when you use this function you will play against th computer """
+    def playAgainstAIOn(self):
+        self.__platAgainstAI = True
+
+    """ let the AI plays his turn """
+    def __handleAI(self):
+        self.__view.clickedOct(None)
+        currentState = self.__board.boardToJson()
+        nextState = self.__AI.alphaBetaSearch(currentState)
+        self.__board.jsonToBoard(nextState)
+        self.__view.repaint()
