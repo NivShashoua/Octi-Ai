@@ -10,12 +10,13 @@ import random
 
 class OctiAi_alphaBeta:
     """ Constants """
-    __DEPTH = 1     # how many layers the alpha beta algorithm will search
-    __BIAS = 32 #pow(32, (2 * __DEPTH) - 1)
+    __DEPTH = 2     # how many layers the alpha beta algorithm will search
+    __BIAS = 32     # an average number of possible action in a turn.
 
     """ Constructor """
     def __init__(self, board):
         self.__AiBoard = board
+        self.__randomBias = 0
 
     """ return a jason of the state that the AI will choose. The best decision against an optimal enemy,
         within depth = __DEPTH  steps"""
@@ -32,6 +33,13 @@ class OctiAi_alphaBeta:
 
         stateAndValue = (state, -math.inf)
         for nextState in self.__AiBoard.getSuccessors():
+
+            # at the beginning set a new bias for every possible action.
+            # it help to choose the preferred state among equal states
+            if depth == self.__DEPTH:
+                self.setNewBias()
+                print("--\n", self.__randomBias)
+
             newValue = max(stateAndValue[1], self.__minValue(nextState, alpha, beta, depth)[1])
             if newValue != stateAndValue[1]:
                 stateAndValue = (nextState, newValue)
@@ -60,15 +68,19 @@ class OctiAi_alphaBeta:
             beta = min(beta, stateAndValue[1])    # update beta
         return stateAndValue
 
+    """ set a  """
+    def setNewBias(self):
+        self.__randomBias = random.randrange(self.__BIAS)
+
     """evaluate a number according to the worth of a state.
        return a double """
     def __evaluation(self, state):
         """TODO: together"""
         self.__AiBoard.jsonToBoard(state)
         if self.__AiBoard.isGoalState() == Players.Green:
-            return math.inf     # if the AI win, remember the AI is the green player
+            return 1000000     # if the AI win, remember the AI is the green player
         elif self.__AiBoard.isGoalState() == Players.Red:
-            return -math.inf    # if the AI lose, remember the opponent of the AI is the red player
+            return -1000000    # if the AI lose, remember the opponent of the AI is the red player
 
         evaluation = 0  # the number that represent the evaluation
 
@@ -79,6 +91,6 @@ class OctiAi_alphaBeta:
         evaluation = len(allGreenOct) * (120 + self.__BIAS) + len(allRedOct) * (-100 + self.__BIAS)
 
         # use random to choose the preferred state among equal states.
-        evaluation = evaluation + random.randrange(self.__BIAS)
+        evaluation = evaluation + self.__randomBias
 
         return evaluation
