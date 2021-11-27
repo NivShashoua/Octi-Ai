@@ -31,8 +31,12 @@ class OctiAi_alphaBeta:
         if self.__AiBoard.isGoalState() is not None or depth == 0:
             return state, self.__evaluation(state)
 
+        #explored = set()    # a hash table that save all the state the has been explored already in the layer.
         stateAndValue = (state, -math.inf)
         for nextState in self.__AiBoard.getSuccessors():
+            #if nextState not in explored:
+                #if depth != self.__DEPTH:
+                    #explored.add(nextState)
 
             # at the beginning set a new bias for every possible action.
             # it help to choose the preferred state among equal states
@@ -57,8 +61,13 @@ class OctiAi_alphaBeta:
         if self.__AiBoard.isGoalState() is not None or depth == 0:
             return state, self.__evaluation(state)
 
+        #explored = set()  # a hash table that save all the state the has been explored already in the layer.
         stateAndValue = (state, math.inf)
         for nextState in self.__AiBoard.getSuccessors():
+            #if nextState not in explored:
+                #if depth != self.__DEPTH:
+                    #explored.add(nextState)
+
             newValue = min(stateAndValue[1], self.__maxValue(nextState, alpha, beta, depth - 1)[1])
             if newValue != stateAndValue[1]:
                 stateAndValue = (nextState, newValue)
