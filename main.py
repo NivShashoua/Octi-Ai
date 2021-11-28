@@ -15,7 +15,7 @@ if __name__ == '__main__':
     AI = OctiAi.OctiAi_alphaBeta.OctiAi_alphaBeta(AiBoard)
     view = OctiView.BoardGameView.BoardGameView(board)
     controller = OctiController.BoardGameController.BoardGameController(board, view, AI)
-    controller.playAgainstAIOn()
+    controller.playAgainstAIOn()    # if you don't want to play against AI, make this line a comment
 
     # board.printBoard()
     # board.insertArrow('R1', Directions.Up)
