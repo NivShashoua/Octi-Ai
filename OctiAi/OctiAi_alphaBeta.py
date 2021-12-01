@@ -99,12 +99,11 @@ class OctiAi_alphaBeta:
         # green oct (the AI's octs) life worth 120, and red oct(opponent's octs) worth -100
         evaluation = len(allGreenOct) * (120) + len(allRedOct) * (-100)
 
-
         for oct in allGreenOct:
             evaluation += self.__evaluate_arrows(oct)
 
-        nearst_oct = self.__find_nearest_oct_to_goal(allGreenOct)
-        evaluation += self.__evaluate_distance(nearst_oct)
+        nearest_oct = self.__find_nearest_oct_to_goal(allGreenOct)
+        evaluation += self.__evaluate_distance(nearest_oct)
 
 
         # use random to choose the preferred state among equal states.
@@ -144,8 +143,8 @@ class OctiAi_alphaBeta:
 
     def __evaluate_distance(self, oct):
         """ the more arrows the nearest oct to gaol has, the better.
-            i.e - (number of arrows) * (1/steps + 0.5).
-            The 0.5 is because that the number of steps can be zero, and we don't want to divide by zero"""
-        return 1/(self.__AiBoard.numberOfStepsToGoal(oct) + 0.5) * len(self.__AiBoard.allArrows(oct))
+            i.e - (number of arrows) * (15/steps + 0.0001).
+            The 0.0001 is because that the number of steps can be zero, and we don't want to divide by zero"""
+        return 15/(self.__AiBoard.numberOfStepsToGoal(oct) + 0.0001) * len(self.__AiBoard.allArrows(oct))
 
 
