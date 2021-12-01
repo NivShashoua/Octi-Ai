@@ -16,23 +16,25 @@ if __name__ == '__main__':
     view = OctiView.BoardGameView.BoardGameView(board)
     controller = OctiController.BoardGameController.BoardGameController(board, view, AI)
     controller.playAgainstAIOn()    # if you don't want to play against AI, make this line a comment
-
+    """ Attention !!!!!
+        need to check what  the AI is doning if the user only insert arrows,
+        is it start moving at some point """
     # board.printBoard()
     # board.insertArrow('R1', Directions.Up)
     # board.insertArrow('G1', Directions.Down)
-    # board.insertArrow('R2', Directions.UpLeft)
-    # board.insertArrow('G4', Directions.DownLeft)
-    # board.move('R2', (4, 1))
+    # board.insertArrow('R2', Directions.Down)
+    # board.insertArrow('G2', Directions.DownLeft)
+    # board.move('R1', (4, 1))
     # board.printBoard()
-    # board.move('G1', (2, 1))
+    # board.move('G2', (2, 1))
     # board.printBoard()
     # board.insertArrow('R2', Directions.Up)
-    # board.move('G1', (3,1))
+    # board.move('G1', (3, 1))
     # board.move('R2', (2, 1))
     # board.printBoard()
-    #board.insertArrow("G1", Directions.Down)
-    #board.insertArrow('R1', Directions.UpLeft)
-    #
+    # board.insertArrow("G1", Directions.Down)
+    # board.insertArrow('R1', Directions.UpLeft)
+
     # jsonBoard = board.boardToJson()
     # #print(jsonBoard)
     # board.jsonToBoard(jsonBoard)
@@ -43,7 +45,6 @@ if __name__ == '__main__':
     # board.jsonToBoard(jsonBoard)
 
     #print(AI.alphaBetaSearch(board.boardToJson()))
-
     sys.exit(app.exec_())
 
 
