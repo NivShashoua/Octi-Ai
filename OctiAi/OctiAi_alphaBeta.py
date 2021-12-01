@@ -79,7 +79,7 @@ class OctiAi_alphaBeta:
 
     """ set a  """
     def setNewBias(self):
-        self.__randomBias = random.randrange(self.__BIAS)
+        self.__randomBias = random.randrange(1, self.__BIAS)
 
     """evaluate a number according to the worth of a state.
        return a double """
@@ -97,9 +97,55 @@ class OctiAi_alphaBeta:
         allRedOct = self.__AiBoard.namesOfAllPlayerAliveOct(Players.Red)
 
         # green oct (the AI's octs) life worth 120, and red oct(opponent's octs) worth -100
-        evaluation = len(allGreenOct) * (120 + self.__BIAS) + len(allRedOct) * (-100 + self.__BIAS)
+        evaluation = len(allGreenOct) * (120) + len(allRedOct) * (-100)
+
+
+        for oct in allGreenOct:
+            evaluation += self.__evaluate_arrows(oct)
+
+        nearst_oct = self.__find_nearest_oct_to_goal(allGreenOct)
+        evaluation += self.__evaluate_distance(nearst_oct)
+
 
         # use random to choose the preferred state among equal states.
-        evaluation = evaluation + self.__randomBias
+        evaluation = evaluation + 1/self.__randomBias
 
         return evaluation
+
+    def __evaluate_arrows(self, oct:str):
+        score = 0
+        arrows = self.__AiBoard.allArrows(oct)
+        for arrow in arrows:
+            if arrow == Directions.Down:
+                score += 5
+            elif arrow == Directions.DownLeft or arrow == Directions.DownRight:
+                score += 4
+            elif arrow == Directions.Left or arrow == Directions.Right:
+                score += 3
+            else:
+                score += 2
+
+            # optimal number of arrows for an oct is 3 arrows
+            if len(arrows) == 3:
+                score *= 1.5
+
+        return score
+
+    def __find_nearest_oct_to_goal(self, octs:list[str]):
+        nearest = octs[0]
+        nearest_steps = self.__AiBoard.numberOfStepsToGoal(nearest)
+        for i in range(1, len(octs)):
+            current_steps = self.__AiBoard.numberOfStepsToGoal(octs[i])
+            if nearest_steps > current_steps:
+                nearest = octs[i]
+                nearest_steps = current_steps
+
+        return nearest
+
+    def __evaluate_distance(self, oct):
+        """ the more arrows the nearest oct to gaol has, the better.
+            i.e - (number of arrows) * (1/steps + 0.5).
+            The 0.5 is because that the number of steps can be zero, and we don't want to divide by zero"""
+        return 1/(self.__AiBoard.numberOfStepsToGoal(oct) + 0.5) * len(self.__AiBoard.allArrows(oct))
+
+
