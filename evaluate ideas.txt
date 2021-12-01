@@ -15,3 +15,6 @@ f(arrows, stepsToGoal, numberOfOctsThatHaveArrows) =
  ישנו מספר אופטימלי(3 או 2) של חצים לאוקטי יחיד
  ישו מספר אופטימלי של מספר חצים משומשים - 12 פחות נוטרים
  
+ !!!!!
+ need to check what  the AI is doning if the user only insert arrows,
+ is it start moving at some point
