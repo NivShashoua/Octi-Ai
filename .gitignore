@@ -2,3 +2,5 @@
 /OctiController/__pycache__
 /OctiModel/__pycache__
 /OctiView/__pycache__
+OctiAi/__pycache__/__init__.cpython-39.pyc
+OctiAi/__pycache__/OctiAi_alphaBeta.cpython-39.pyc
