@@ -145,6 +145,6 @@ class OctiAi_alphaBeta:
         """ the more arrows the nearest oct to gaol has, the better.
             i.e - (number of arrows) * (15/steps + 0.0001).
             The 0.0001 is because that the number of steps can be zero, and we don't want to divide by zero"""
-        return 15/(self.__AiBoard.numberOfStepsToGoal(oct) + 0.0001) * len(self.__AiBoard.allArrows(oct))
+        return 15/(self.__AiBoard.numberOfStepsToGoal(oct)) * len(self.__AiBoard.allArrows(oct))
 
 
