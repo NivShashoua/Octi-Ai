@@ -478,8 +478,14 @@ class BoardGame:
         redRowGoal = 1      # the row the red player need to be in order to win (the start point of the green).
 
         octObj = self.__octObject(oct)
+        octPlace = octObj.getPlace()
 
         if octObj.getPlayer() == Players.Green:
-            return abs(octObj.getPlace()[0] - greenRowGoal)
+
+            if octPlace == (greenRowGoal, 0) or octPlace == (greenRowGoal, self.__BOARD_WIDTH - 1):
+                return 1
+            return abs(octPlace[0] - greenRowGoal)
         else:
-            return abs(octObj.getPlace()[0] - redRowGoal)
+            if octPlace == (redRowGoal, 0) or octPlace == (redRowGoal, self.__BOARD_WIDTH - 1):
+                return 1
+            return abs(octPlace[0] - redRowGoal)
